@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Request Donation</title>
+    <!-- Include your CSS framework (e.g., Tailwind) if needed -->
+</head>
+<body>
+    <h1>Request a Donation</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="space-y-4">
+            <div>
+                <label for="id_blood_bank">Select Blood Bank:</label>
+                {{ form.blood_bank }}
+                {% for error in form.blood_bank.errors %}
+                    <p class="text-red-500">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <div>
+                <label for="id_donated_amount">Amount Donated (units):</label>
+                {{ form.donated_amount }}
+                {% for error in form.donated_amount.errors %}
+                    <p class="text-red-500">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <div>
+                <label for="id_scheduled_datetime">Donation Date & Time:</label>
+                {{ form.scheduled_datetime }}
+                {% for error in form.scheduled_datetime.errors %}
+                    <p class="text-red-500">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <button type="submit" class="bg-red-500 text-white p-3 rounded">Submit Donation Request</button>
+        </div>
+    </form>
+</body>
+</html>

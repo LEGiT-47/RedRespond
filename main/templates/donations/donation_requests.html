@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Donation Requests</title>
+</head>
+<body>
+    <h1>Pending Donation Requests</h1>
+    {% if donation_requests %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Donor</th>
+                    <th>Amount</th>
+                    <th>Scheduled Date & Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for donation in donation_requests %}
+                    <tr>
+                        <td>{{ donation.donor.username }}</td>
+                        <td>{{ donation.donated_amount }}</td>
+                        <td>{{ donation.scheduled_datetime|date:"Y-m-d H:i" }}</td>
+                        <td>
+                            <form method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <!-- Pass the donation ID so we know which donation to update -->
+                                <input type="hidden" name="donation_id" value="{{ donation.id }}">
+                                <!-- You could use a checkbox or a select. Here a simple button sets confirmed True. -->
+                                <input type="hidden" name="confirmed" value="true">
+                                <button type="submit" class="bg-green-500 text-white p-2 rounded">Confirm</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No pending donation requests.</p>
+    {% endif %}
+</body>
+</html>

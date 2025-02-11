@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Past Donations</title>
+</head>
+<body>
+    <h1>Your Past Donations</h1>
+    {% if past_donations %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Blood Bank</th>
+                    <th>Amount</th>
+                    <th>Scheduled Date & Time</th>
+                    <th>Request Date & Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for donation in past_donations %}
+                    <tr>
+                        <td>{{ donation.blood_bank.organization_name }}</td>
+                        <td>{{ donation.donated_amount }}</td>
+                        <td>{{ donation.scheduled_datetime|date:"Y-m-d H:i" }}</td>
+                        <td>{{ donation.request_datetime|date:"Y-m-d H:i" }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You have no confirmed donations yet.</p>
+    {% endif %}
+</body>
+</html>
