@@ -36,9 +36,22 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class DonationRequestForm(forms.ModelForm):
+    BLOOD_GROUPS = [
+        ('A+', 'A+'),
+        ('A-', 'A-'),
+        ('B+', 'B+'),
+        ('B-', 'B-'),
+        ('AB+', 'AB+'),
+        ('AB-', 'AB-'),
+        ('O+', 'O+'),
+        ('O-', 'O-'),
+    ]
+    
+    blood_group = forms.ChoiceField(choices=BLOOD_GROUPS)
+
     class Meta:
         model = Donation
-        fields = ['blood_bank', 'donated_amount', 'scheduled_datetime']
+        fields = ['blood_bank', 'blood_group', 'donated_amount', 'scheduled_datetime']
         widgets = {
             'scheduled_datetime': forms.DateTimeInput(
                 attrs={
@@ -65,6 +78,9 @@ class DonationRequestForm(forms.ModelForm):
         self.fields['blood_bank'].queryset = BloodBank.objects.all()
         self.fields['donated_amount'].label = "Amount Donated (units)"
         self.fields['scheduled_datetime'].label = "Select Donation Date & Time"
+        self.fields['blood_group'].widget.attrs.update({
+            'class': 'w-full px-4 py-3 rounded border border-gray-200 focus:border-red-500 focus:ring focus:ring-red-200 transition duration-300'
+        })
 
 class DonationConfirmationForm(forms.ModelForm):
     class Meta:

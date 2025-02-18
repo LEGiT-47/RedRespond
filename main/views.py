@@ -56,7 +56,18 @@ def login_view(request):
 
 @login_required
 def normal_home(request):
-    return render(request, 'main/normal_home.html')
+    """View for a donor to create a donation request."""
+    blood_groupiee=NormalUser.objects.get(user=request.user)
+    if request.method == "POST":
+        form = DonationRequestForm(request.POST)
+        if form.is_valid():
+            donation = form.save(commit=False)
+            donation.donor = request.user  # Automatically set donor from logged-in user
+            donation.save()
+            return redirect('donation_request_success')
+    else:
+          form = DonationRequestForm()
+    return render(request, 'main/normal_home.html', {'form': form,'blood_groupiee':blood_groupiee})
 
 @login_required
 def blood_bank_home(request):
@@ -70,19 +81,19 @@ def logout_view(request):
 
 
 
-@login_required
-def donation_request_view(request):
-    """View for a donor to create a donation request."""
-    if request.method == "POST":
-        form = DonationRequestForm(request.POST)
-        if form.is_valid():
-            donation = form.save(commit=False)
-            donation.donor = request.user  # Automatically set donor from logged-in user
-            donation.save()
-            return redirect('donation_request_success')
-    else:
-        form = DonationRequestForm()
-    return render(request, 'donations/donation_request.html', {'form': form})
+# @login_required
+# def donation_request_view(request):
+#     """View for a donor to create a donation request."""
+#     if request.method == "POST":
+#         form = DonationRequestForm(request.POST)
+#         if form.is_valid():
+#             donation = form.save(commit=False)
+#             donation.donor = request.user  # Automatically set donor from logged-in user
+#             donation.save()
+#             return redirect('donation_request_success')
+#     else:
+#         form = DonationRequestForm()
+#     return render(request, 'donations/donation_request.html', {'form': form})
 
 @login_required
 def donation_request_success_view(request):
