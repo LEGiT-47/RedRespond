@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth import logout
 from .models import Donation
 from .forms import DonationRequestForm, DonationConfirmationForm
+from django.utils import timezone
 
 def register(request):
     if request.method == 'POST':
@@ -58,6 +59,10 @@ def login_view(request):
 def normal_home(request):
     """View for a donor to create a donation request."""
     blood_groupiee=NormalUser.objects.get(user=request.user)
+    past_donations = Donation.objects.filter(donor=request.user, confirmed=True)
+    already = Donation.objects.filter(donor=request.user, confirmed=True, scheduled_datetime__lt=timezone.now())
+    notconfirm= Donation.objects.filter(donor=request.user, confirmed=False)
+    pending= Donation.objects.filter(donor=request.user, confirmed=True, scheduled_datetime__gt=timezone.now())
     if request.method == "POST":
         form = DonationRequestForm(request.POST)
         if form.is_valid():
@@ -67,7 +72,7 @@ def normal_home(request):
             return redirect('donation_request_success')
     else:
           form = DonationRequestForm()
-    return render(request, 'main/normal_home.html', {'form': form,'blood_groupiee':blood_groupiee})
+    return render(request, 'main/normal_home.html', {'form': form,'blood_groupiee':blood_groupiee,'past_donations': past_donations,'already':already,'notconfirm':notconfirm,'pending':pending})
 
 @login_required
 def blood_bank_home(request):
@@ -78,22 +83,6 @@ def blood_bank_home(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
-
-
-
-# @login_required
-# def donation_request_view(request):
-#     """View for a donor to create a donation request."""
-#     if request.method == "POST":
-#         form = DonationRequestForm(request.POST)
-#         if form.is_valid():
-#             donation = form.save(commit=False)
-#             donation.donor = request.user  # Automatically set donor from logged-in user
-#             donation.save()
-#             return redirect('donation_request_success')
-#     else:
-#         form = DonationRequestForm()
-#     return render(request, 'donations/donation_request.html', {'form': form})
 
 @login_required
 def donation_request_success_view(request):
