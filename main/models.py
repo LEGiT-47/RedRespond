@@ -43,7 +43,16 @@ class Donation(models.Model):
     # Auto-populated timestamp when the donation request is created.
     request_datetime = models.DateTimeField(auto_now_add=True)
     # Confirmation status set by the blood bank.
-    confirmed = models.BooleanField(default=False)
+    # confirmed = models.BooleanField(default=False)
+    STATUS_CHOICES = (
+        ('not_confirmed', 'Not Confirmed'),
+        ('pending', 'Confirmed but Pending'),
+        ('donated', 'Donated'),
+        ('not_accepted', 'Not Accepted')
+    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='not_confirmed')
+    not_accepted_reason = models.TextField(blank=True, null=True)
+    additional_info = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f"Donation by {self.donor.username} on {self.scheduled_datetime:%Y-%m-%d %H:%M}"

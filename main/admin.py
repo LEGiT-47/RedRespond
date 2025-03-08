@@ -22,8 +22,8 @@ class DonationAdmin(admin.ModelAdmin):
         'donated_amount', 
         'scheduled_datetime', 
         'request_datetime', 
-        'confirmed'
+        'status',
     )
-    list_filter = ('confirmed', 'blood_bank')
+    list_filter = ('status', 'blood_bank')
     search_fields = ('donor__username', 'blood_bank__organization_name')
 

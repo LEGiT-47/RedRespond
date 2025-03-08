@@ -124,17 +124,15 @@
                   </select> {% endcomment %}
                 </div>
               </div>
-              <div class="space-y-2">
-                <label class="block  font-medium" 
+                <div class="space-y-2">
+                <label class="block font-medium" for="id_additional_info"
                   >Additional Notes</label
                 >
-                <textarea
-                  class="w-full p-3 rounded-xl border border-gray-200 focus:border-red-400 focus:ring-2 focus:ring-red-100 outline-none transition-all duration-300 h-32"
-                  style="resize: none; min-height: 200px;"
-
-                  placeholder="Any medical conditions or special requirements..."
-                ></textarea>
-              </div>
+                {{ form.additional_info }}
+                {% for error in form.additional_info.errors %}
+                  <p class="text-red-500">{{ error }}</p>
+                {% endfor %}
+                </div>
               <div
                 class="bg-gradient-to-r from-red-50 to-pink-50 p-4 rounded-xl"
               >
@@ -207,7 +205,7 @@
                     let totalVolume = 0;
                     let donationDate;
                     let currentDate;
-                    {% for donation in past_donations %}
+                    {% for donation in already %}
                        donationDate = new Date("{{ donation.scheduled_datetime|date:'Y-m-d H:i:s' }}");
                       currentDate = new Date(); // Get current date and time directly from JavaScript
                       if (donationDate <= currentDate) {
@@ -234,7 +232,7 @@
                   let amounts = [];
                   let donationDate;
                   
-                  {% for donation in past_donations %}
+                  {% for donation in already %}
                   donationDate = new Date("{{ donation.scheduled_datetime|date:'Y-m-d H:i:s' }}");
                   if (donationDate <= currentDate) {
                     dates.push('{{ donation.scheduled_datetime|date:"Y-m-d" }}');
@@ -261,13 +259,23 @@
                       beginAtZero: true,
                       title: {
                       display: true,
-                      text: 'Amount (ml)'
+                      text: 'Amount (ml)',
+                      font: {
+                        size: 16,
+                        weight: 'bold',
+                        color: 'black'
+                        }
                       }
                     },
                     x: {
                       title: {
                       display: true,
-                      text: 'Date'
+                      text: 'Date',
+                      font: {
+                      size: 16,
+                      weight: 'bold',
+                      color: 'black'
+                      }
                       }
                     }
                     }

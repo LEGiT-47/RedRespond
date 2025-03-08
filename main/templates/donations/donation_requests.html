@@ -13,7 +13,11 @@
                     <th>Donor</th>
                     <th>Amount</th>
                     <th>Scheduled Date & Time</th>
-                    <th>Action</th>
+           
+                    <th>Status</th>
+                    <th>Additional Info</th>
+                    <th>Update</th>
+                
                 </tr>
             </thead>
             <tbody>
@@ -22,16 +26,29 @@
                         <td>{{ donation.donor.username }}</td>
                         <td>{{ donation.donated_amount }}</td>
                         <td>{{ donation.scheduled_datetime|date:"Y-m-d H:i" }}</td>
-                        <td>
-                            <form method="post" style="display:inline;">
-                                {% csrf_token %}
-                                <!-- Pass the donation ID so we know which donation to update -->
-                                <input type="hidden" name="donation_id" value="{{ donation.id }}">
-                                <!-- You could use a checkbox or a select. Here a simple button sets confirmed True. -->
-                                <input type="hidden" name="confirmed" value="true">
-                                <button type="submit" class="bg-green-500 text-white p-2 rounded">Confirm</button>
-                            </form>
-                        </td>
+                 
+                                                            <td>
+                                                                <form method="post" style="display:inline;">
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" name="donation_id" value="{{ donation.id }}">
+                                                                    <select name="status" required>
+                                                                        <option value="pending">Accept</option>
+                                                                        <option value="not_accepted">Reject</option>
+                                                                    </select>
+                                                                    <input type="text" name="not_accepted_reason" id="not_accepted_reason_{{ donation.id }}" style="display: none;" placeholder="Enter rejection reason">
+                                                                    <script>
+                                                                        document.querySelector(`#not_accepted_reason_{{ donation.id }}`).closest('form').querySelector('select[name="status"]').addEventListener('change', function() {
+                                                                            const reasonField = document.querySelector(`#not_accepted_reason_{{ donation.id }}`);
+                                                                            reasonField.style.display = this.value === 'not_accepted' ? 'inline' : 'none';
+                                                                            reasonField.required = this.value === 'not_accepted';
+                                                                        });
+                                                                    </script>
+                                                                </td>
+                                                            <td style="max-width: 500px; word-wrap: break-word; white-space: normal;">{{ donation.additional_info }}</td>
+                                                                <td>
+                                                                    <button type="submit" class="bg-green-500 text-white p-2 rounded ml-2" style="width:100%;">Update Status</button>
+                                                                </form>
+                                                            </td>
                     </tr>
                 {% endfor %}
             </tbody>

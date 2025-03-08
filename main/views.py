@@ -41,6 +41,11 @@ def home(request):
     return render(request, 'main/home.html')
 
 def login_view(request):
+    if request.user.is_authenticated:
+        if request.user.user_type == 'normal':
+            return redirect('normal_home')
+        elif request.user.user_type == 'blood_bank':
+            return redirect('blood_bank_home')
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
@@ -59,10 +64,10 @@ def login_view(request):
 def normal_home(request):
     """View for a donor to create a donation request."""
     blood_groupiee=NormalUser.objects.get(user=request.user)
-    past_donations = Donation.objects.filter(donor=request.user, confirmed=True)
-    already = Donation.objects.filter(donor=request.user, confirmed=True, scheduled_datetime__lt=timezone.now())
-    notconfirm= Donation.objects.filter(donor=request.user, confirmed=False)
-    pending= Donation.objects.filter(donor=request.user, confirmed=True, scheduled_datetime__gt=timezone.now())
+    # past_donations = Donation.objects.filter(donor=request.user).exclude(status='not_confirmed',status='not_accepted')
+    already = Donation.objects.filter(donor=request.user,  status='donated')
+    notconfirm= Donation.objects.filter(donor=request.user,status='not_confirmed')
+    pending= Donation.objects.filter(donor=request.user, scheduled_datetime__gt=timezone.now(),status='pending')
     if request.method == "POST":
         form = DonationRequestForm(request.POST)
         if form.is_valid():
@@ -72,7 +77,7 @@ def normal_home(request):
             return redirect('donation_request_success')
     else:
           form = DonationRequestForm()
-    return render(request, 'main/normal_home.html', {'form': form,'blood_groupiee':blood_groupiee,'past_donations': past_donations,'already':already,'notconfirm':notconfirm,'pending':pending})
+    return render(request, 'main/normal_home.html', {'form': form,'blood_groupiee':blood_groupiee,'already':already,'notconfirm':notconfirm,'pending':pending})
 
 @login_required
 def blood_bank_home(request):
@@ -101,13 +106,14 @@ def donation_requests_view(request):
     except Exception:
         return redirect('home')  # or show an error if the user is not a blood bank
 
-    donation_requests = Donation.objects.filter(blood_bank=blood_bank, confirmed=False)
+    donation_requests = Donation.objects.filter(blood_bank=blood_bank,status='not_confirmed')
 
     # For each donation, we can handle a confirmation form.
     if request.method == "POST":
         donation_id = request.POST.get('donation_id')
         donation = get_object_or_404(Donation, id=donation_id, blood_bank=blood_bank)
         form = DonationConfirmationForm(request.POST, instance=donation)
+        print(form)
         if form.is_valid():
             form.save()
             return redirect('donation_requests')
