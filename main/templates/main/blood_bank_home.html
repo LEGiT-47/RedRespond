@@ -4,15 +4,72 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Webcrumbs Plugin</title>
+    <title>RedRespond-Home</title>
      <link rel="stylesheet" href="{% static 'blood_bank_home.css' %}">
+     <style>
+      #webcrumbs .hover\:bg-gray-50:hover {
+        --tw-bg-opacity: 1;
+        background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+      }
+      #webcrumbs .hover\:bg-red-100:hover {
+        --tw-bg-opacity: 1;
+        background-color: rgb(254 226 226 / var(--tw-bg-opacity));
+      }
+      #webcrumbs .hover\:bg-red-600:hover {
+        --tw-bg-opacity: 1;
+        background-color: rgb(220 38 38 / var(--tw-bg-opacity));
+      }
+      #webcrumbs .hover\:text-red-500:hover {
+        --tw-text-opacity: 1;
+        color: rgb(239 68 68 / var(--tw-text-opacity));
+      }
+      #webcrumbs .hover\:shadow-xl:hover {
+        --tw-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        --tw-shadow-colored: 0 20px 25px -5px var(--tw-shadow-color),
+          0 8px 10px -6px var(--tw-shadow-color);
+        box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+          var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+      }
+      #webcrumbs .focus\:ring-2:focus {
+        --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
+          var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+        --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
+          calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+        box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
+          var(--tw-shadow, 0 0 #0000);
+      }
+      #webcrumbs .focus\:ring-red-500:focus {
+        --tw-ring-opacity: 1;
+        --tw-ring-color: rgb(239 68 68 / var(--tw-ring-opacity));
+      }
+      @keyframes pulse {
+        50% {
+          opacity: 0.5;
+        }
+      }
+      #webcrumbs .animate-pulse {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+      #webcrumbs .text-red-500 {
+        --tw-text-opacity: 1;
+        color: rgb(239 68 68 / var(--tw-text-opacity));
+      }
+      #webcrumbs .text-red-600 {
+        --tw-text-opacity: 1;
+        color: rgb(220 38 38 / var(--tw-text-opacity));
+      }
+    </style>
+
   </head>
   <body onload="updateTime()">
-    <div id="webcrumbs">
+    <div id="webcrumbs" style="min-width:1480px">
       <div class="flex flex-col min-h-screen bg-gray-50 w-full">
-        <header class="bg-white shadow-lg p-4 w-full">
-          <nav class="container mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold">Blood Donation System</h1>
+        <header class="bg-white shadow-lg p-4 w-full" style="border-radius:30px">
+          <nav class="container mx-auto flex justify-between items-center" >
+            <div class="flex items-center space-x-2 hover:scale-105 transition-transform duration-300"> 
+              <span class="material-symbols-outlined text-red-600 text-3xl animate-pulse">bloodtype</span>
+               <h1 class="text-2xl font-bold text-red-600">RedRespond</h1> </div> 
             <div class="flex items-center space-x-6">
               <div class="flex items-center space-x-2">
                 <span class="material-symbols-outlined text-red-500"
@@ -43,22 +100,22 @@
             >
               <h2 class="text-xl font-semibold mb-4">Create Blood Request</h2>
               <form class="space-y-4">
-                <div>
-                  <label class="block mb-2">Required Blood Type</label>
-                  <select
-                    class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none"
-                  >
-                    <option>A+</option>
-                    <option>A-</option>
-                    <option>B+</option>
-                    <option>B-</option>
-                    <option>AB+</option>
-                    <option>AB-</option>
-                    <option>O+</option>
-                    <option>O-</option>
-                  </select>
-                </div>
-                <div>
+          <div>
+            <label class="block mb-2">Required Blood Type</label>
+            <select
+              class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none"
+            >
+              <option>A+</option>
+              <option>A-</option>
+              <option>B+</option>
+              <option>B-</option>
+              <option>AB+</option>
+              <option>AB-</option>
+              <option>O+</option>
+              <option>O-</option>
+            </select>
+          </div>
+          <div>
                   <label class="block mb-2">Units Required</label>
                   <input
                     type="number"
@@ -108,106 +165,36 @@
                   <p class="text-sm">Available Units</p>
                 </div>
               </div>
-              <h3 class="text-lg font-semibold mb-4">Recent Requests</h3>
-              <div class="space-y-4">
-                <div
-                  class="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
-                >
-                  <div class="flex justify-between items-center">
-                    <div>
-                      <span class="material-symbols-outlined text-red-500"
-                        >water_drop</span
-                      >
-                      <span class="ml-2 font-medium">Blood Type: O+</span>
+              {% if donation_requests %}
+    <h3 class="text-lg font-semibold mb-4">Recent Requests</h3>
+    <div class="space-y-4">
+        {% for donation in donation_requests %}
+            <div class="border rounded-lg p-4 hover:bg-gray-50 transition-colors cursor-pointer">
+              <a href="{% url 'donation_detail' donation.id %}">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <span class="material-symbols-outlined text-red-500">water_drop</span>
+                        <span class="ml-2 font-medium">{{ donation.donor.username }}</span>
                     </div>
-                    <span
-                      class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded-full text-sm"
-                      >Urgent</span
-                    >
-                  </div>
-                  <p class="mt-2 text-sm text-gray-600">
-                    3 units required by 02/20/2024
-                  </p>
-                </div>
-                <div
-                  class="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
-                >
-                  <div class="flex justify-between items-center">
-                    <div>
-                      <span class="material-symbols-outlined text-red-500"
-                        >water_drop</span
-                      >
-                      <span class="ml-2 font-medium">Blood Type: AB-</span>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded-full text-sm">Urgent</span>
+                        <span class="text-sm font-medium text-gray-700">{{ donation.donated_amount }} units</span>
                     </div>
-                    <span
-                      class="bg-green-100 text-green-600 px-2 py-1 rounded-full text-sm"
-                      >Regular</span
-                    >
-                  </div>
-                  <p class="mt-2 text-sm text-gray-600">
-                    2 units required by 02/25/2024
-                  </p>
                 </div>
+              </a>
+            </div>
+        {% endfor %}
+    </div>
+
+    
+{% else %}
+    <p>No pending donation requests.</p>
+{% endif %}
+
+                
               </div>
             </div>
-            <div
-              class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow"
-            >
-              <h2 class="text-xl font-semibold mb-4">
-                Today&#x27;s Donation Slots
-              </h2>
-              <form class="space-y-4">
-                <div>
-                  <label class="block mb-2">Donor Name</label>
-                  <input
-                    type="text"
-                    class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none"
-                    placeholder="Enter donor name"
-                  />
-                </div>
-                <div>
-                  <label class="block mb-2">Blood Type</label>
-                  <select
-                    class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none"
-                  >
-                    <option>A+</option>
-                    <option>A-</option>
-                    <option>B+</option>
-                    <option>B-</option>
-                    <option>AB+</option>
-                    <option>AB-</option>
-                    <option>O+</option>
-                    <option>O-</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="block mb-2">Preferred Time Slot</label>
-                  <select
-                    class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none"
-                  >
-                    <option>9:00 AM - 10:00 AM</option>
-                    <option>10:00 AM - 11:00 AM</option>
-                    <option>11:00 AM - 12:00 PM</option>
-                    <option>2:00 PM - 3:00 PM</option>
-                    <option>3:00 PM - 4:00 PM</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="block mb-2">Phone Number</label>
-                  <input
-                    type="tel"
-                    class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none"
-                    placeholder="Enter phone number"
-                  />
-                </div>
-                <button
-                  class="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transform transition-all hover:scale-105"
-                >
-                  Book Slot
-                </button>
-              </form>
-            </div>
-          </div>
+             
         </main>
         <footer class="bg-white shadow-lg mt-6 w-full">
           <div class="container mx-auto py-8 px-4">

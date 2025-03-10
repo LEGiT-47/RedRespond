@@ -162,7 +162,8 @@
                 <div class="space-y-4" style="height: 200px; overflow-y: auto;">
                 {% for donation in already %}
                 <div
-                  class="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                  class="border rounded-lg p-4 hover:bg-gray-50 transition-colors cursor-pointer"
+                  onclick="window.location.href='{% url 'blood_donation_page' donation.id %}'"
                 >
                   <div class="flex justify-between items-center">
                   <div class="flex items-center">
@@ -173,9 +174,19 @@
                   </div>
                   <span class="text-sm ">{{ donation.scheduled_datetime|date:"Y-m-d H:i"}}</span>
                   </div>
+                  <div class="flex justify-between items-center">
                   <p class="mt-2 text-sm   font-semibold">
                    &nbsp;&nbsp;{{ donation.blood_bank.organization_name|upper }} BLOOD BANK
                   </p>
+                  <div class="flex items-center">
+                  <p class="mt-2 text-sm   font-semibold">
+                  &nbsp;&nbsp; Donated Amount : {{ donation.donated_amount }} ml
+                  </p>
+                  <span class=" mt-2 material-symbols-outlined text-red-500 select-none animate-pulse" style="font-variation-settings: 'FILL' 1; user-select: none; -webkit-user-select: none;"
+                  >water_drop</span
+                  >
+                </div>
+                  </div>
                 </div>
                 {% endfor %}
                 
@@ -285,60 +296,82 @@
                 </script>
               </div>
           
-          <div
+            <div
               class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow"
             >
               <h2 class="text-2xl font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent mb-8">Pending Donations</h2>
-                <div class="space-y-4" style="height: 200px; overflow-y: auto;">
-                {% for donation in pending %}
-                <div
-                  class="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+              <div class="space-y-4" style="height: 200px; overflow-y: auto;">
+              {% for donation in pending %}
+              <div
+                class="border rounded-lg p-4 hover:bg-gray-50 transition-colors cursor-pointer"
+                onclick="window.location.href='{% url 'blood_donation_page' donation.id %}'"
+              >
+                <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                <span class="material-symbols-outlined text-red-500 select-none animate-pulse" style="font-variation-settings: 'FILL' 1; user-select: none; -webkit-user-select: none;"
+                >favorite</span
                 >
-                  <div class="flex justify-between items-center">
-                  <div class="flex items-center">
-                  <span class="material-symbols-outlined text-red-500 select-none animate-pulse" style="font-variation-settings: 'FILL' 1; user-select: none; -webkit-user-select: none;"
-                  >favorite</span
-                  >
-                  <span class="ml-2 font-medium">&nbsp;Blood Type: &nbsp;&nbsp;&nbsp;&nbsp;<span class="bg-red-100 text-red-600 px-2 py-1 rounded-full text-sm">{{ blood_groupiee.blood_group}}</span></span>
-                  </div>
-                  <span class="text-sm ">{{ donation.scheduled_datetime|date:"Y-m-d H:i"}}</span>
-                  </div>
-                  <p class="mt-2 text-sm   font-semibold">
-                    &nbsp;&nbsp;{{ donation.blood_bank.organization_name|upper }} BLOOD BANK
-                  </p>
+                <span class="ml-2 font-medium">&nbsp;Blood Type: &nbsp;&nbsp;&nbsp;&nbsp;<span class="bg-red-100 text-red-600 px-2 py-1 rounded-full text-sm">{{ blood_groupiee.blood_group}}</span></span>
                 </div>
-                {% endfor %}
+                <span class="text-sm ">{{ donation.scheduled_datetime|date:"Y-m-d H:i"}}</span>
                 </div>
+                <div class="flex justify-between items-center">
+                <p class="mt-2 text-sm   font-semibold">
+                 &nbsp;&nbsp;{{ donation.blood_bank.organization_name|upper }} BLOOD BANK
+                </p>
+                <div class="flex items-center">
+                <p class="mt-2 text-sm   font-semibold">
+                  &nbsp;&nbsp; Donated Amount : {{ donation.donated_amount }} ml
+                </p>
+                  <span class=" mt-2 material-symbols-outlined text-red-500 select-none animate-pulse" style="font-variation-settings: 'FILL' 1; user-select: none; -webkit-user-select: none;"
+                >water_drop</span
+                >
+                </div>
+                </div>
+              </div>
+              {% endfor %}
+              </div>
               </div>
               <div
               class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow"
             >
               <h2 class="text-2xl font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent mb-8">Not Confirmed</h2>
-                <div class="space-y-4" style="height: 200px; overflow-y: auto;">
-                  {% if notconfirm%}
-                {% for donation in notconfirm %}
-                <div
-                  class="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+              <div class="space-y-4" style="height: 200px; overflow-y: auto;">
+                {% if notconfirm%}
+              {% for donation in notconfirm %}
+              <div
+                class="border rounded-lg p-4 hover:bg-gray-50 transition-colors cursor-pointer"
+                onclick="window.location.href='{% url 'blood_donation_page' donation.id %}'"
+              >
+                <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                <span class="material-symbols-outlined text-red-500 select-none animate-pulse" style="font-variation-settings: 'FILL' 1; user-select: none; -webkit-user-select: none;"
+                >favorite</span
                 >
-                  <div class="flex justify-between items-center">
-                  <div class="flex items-center">
-                  <span class="material-symbols-outlined text-red-500 select-none animate-pulse" style="font-variation-settings: 'FILL' 1; user-select: none; -webkit-user-select: none;"
-                  >favorite</span
-                  >
-                  <span class="ml-2 font-medium">&nbsp;Blood Type: &nbsp;&nbsp;&nbsp;&nbsp;<span class="bg-red-100 text-red-600 px-2 py-1 rounded-full text-sm">{{ blood_groupiee.blood_group}}</span></span>
-                  </div>
-                  <span class="text-sm ">{{ donation.scheduled_datetime|date:"Y-m-d H:i"}}</span>
-                  </div>
-                  <p class="mt-2 text-sm   font-semibold">
-                    &nbsp;&nbsp;{{ donation.blood_bank.organization_name|upper }} BLOOD BANK
-                  </p>
+                <span class="ml-2 font-medium">&nbsp;Blood Type: &nbsp;&nbsp;&nbsp;&nbsp;<span class="bg-red-100 text-red-600 px-2 py-1 rounded-full text-sm">{{ blood_groupiee.blood_group}}</span></span>
                 </div>
-                {% endfor %}
-                {% else %}
-                <p class=" font-semibold">No pending donations</p>
-                {% endif %}
-                
+                <span class="text-sm ">{{ donation.scheduled_datetime|date:"Y-m-d H:i"}}</span>
                 </div>
+                <div class="flex justify-between items-center">
+                <p class="mt-2 text-sm   font-semibold">
+                 &nbsp;&nbsp;{{ donation.blood_bank.organization_name|upper }} BLOOD BANK
+                </p>
+                <div class="flex items-center">
+                <p class="mt-2 text-sm   font-semibold">
+                &nbsp;&nbsp; Donated Amount : {{ donation.donated_amount }} ml  
+                </p>
+                <span class=" mt-2 material-symbols-outlined text-red-500 select-none animate-pulse" style="font-variation-settings: 'FILL' 1; user-select: none; -webkit-user-select: none;"
+                >water_drop</span
+                >
+                </div>
+                </div>
+              </div>
+              {% endfor %}
+              {% else %}
+              <p class=" font-semibold">No pending donations</p>
+              {% endif %}
+              
+              </div>
           </div>
         </main>
         <footer class="mt-16 bg-black border-t" style="border-radius: 30px;">

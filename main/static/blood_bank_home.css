@@ -464,7 +464,7 @@ video {
 }
 #webcrumbs .bg-gray-50 {
   --tw-bg-opacity: 1;
-  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+
 }
 #webcrumbs .bg-green-100 {
   --tw-bg-opacity: 1;
@@ -648,10 +648,10 @@ video {
 }
 @media (min-width: 768px) {
   #webcrumbs .md\:grid-cols-3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   #webcrumbs .md\:grid-cols-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

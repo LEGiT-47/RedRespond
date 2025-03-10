@@ -12,4 +12,6 @@ urlpatterns = [
     path('donate/success/', views.donation_request_success_view, name='donation_request_success'),
     path('bloodbank/requests/', views.donation_requests_view, name='donation_requests'),
     path('donations/past/', views.past_donations_view, name='past_donations'),
+    path('bd_page/<int:id>/', views.blood_donation_page, name='blood_donation_page'),
+    path('donation/details/<int:id>/', views.donation_detail, name='donation_detail')
 ]

@@ -55,27 +55,27 @@ class DonationRequestForm(forms.ModelForm):
         widgets = {
             'scheduled_datetime': forms.DateTimeInput(
             attrs={
-                'type': 'datetime-local',
-                'class': 'w-full px-4 py-3 rounded border border-gray-200 focus:border-red-500 focus:ring focus:ring-red-200 transition duration-300'
+            'type': 'datetime-local',
+            'class': 'w-full px-4 py-3 rounded border border-gray-200 focus:border-red-500 focus:ring focus:ring-red-200 transition duration-300'
             }
             ),
             'donated_amount': forms.NumberInput(
             attrs={
-                'class': 'w-full px-4 py-3 rounded border border-gray-200 focus:border-red-500 focus:ring focus:ring-red-200 transition duration-300',
-                'placeholder': 'Enter amount donated'
+            'class': 'w-full px-4 py-3 rounded border border-gray-200 focus:border-red-500 focus:ring focus:ring-red-200 transition duration-300',
+            'placeholder': 'Enter amount donated',
+            'step': '10'
             }
             ),
             'blood_bank': forms.Select(
             attrs={
-                'class': 'w-full px-4 py-3 rounded border border-gray-200 focus:border-red-500 focus:ring focus:ring-red-200 transition duration-300'
+            'class': 'w-full px-4 py-3 rounded border border-gray-200 focus:border-red-500 focus:ring focus:ring-red-200 transition duration-300'
             }
             ),
             'additional_info': forms.Textarea(
             attrs={
-                'class': 'w-full px-4 py-3 rounded border border-gray-200 focus:border-red-500 focus:ring focus:ring-red-200 transition duration-300',
-                'rows': 7,
-                'placeholder': 'Enter any additional information'
-
+            'class': 'w-full px-4 py-3 rounded border border-gray-200 focus:border-red-500 focus:ring focus:ring-red-200 transition duration-300',
+            'rows': 7,
+            'placeholder': 'Enter any additional information'
             }
             )
         }

@@ -79,9 +79,7 @@ def normal_home(request):
           form = DonationRequestForm()
     return render(request, 'main/normal_home.html', {'form': form,'blood_groupiee':blood_groupiee,'already':already,'notconfirm':notconfirm,'pending':pending})
 
-@login_required
-def blood_bank_home(request):
-    return render(request, 'main/blood_bank_home.html')
+
 
 
 
@@ -130,3 +128,56 @@ def past_donations_view(request):
     """View for a donor to see all confirmed (past) donations."""
     past_donations = Donation.objects.filter(donor=request.user, confirmed=True)
     return render(request, 'donations/past_donations.html', {'past_donations': past_donations})
+
+@login_required
+def blood_donation_page(request,id):
+    donation = get_object_or_404(Donation, id=id)
+    return render(request, 'main/blood_donation_page.html', {'donation': donation})
+
+
+
+@login_required
+def blood_bank_home(request):
+    """
+    View for a blood bank to see donation requests addressed to them.
+    Only pending requests (confirmed=False) are shown.
+    """
+    try:
+        blood_bank = request.user.blood_bank
+    except Exception:
+        return redirect('home')  # Redirect if user is not a blood bank
+
+    donation_requests = Donation.objects.filter(blood_bank=blood_bank, status='not_confirmed')
+
+    if request.method == "POST":
+        donation_id = request.POST.get('donation_id')
+        donation = get_object_or_404(Donation, id=donation_id, blood_bank=blood_bank)
+        form = DonationConfirmationForm(request.POST, instance=donation)
+        
+        if form.is_valid():
+            form.save()
+            return redirect('blood_bank_home')  # Redirect to refresh the page
+    
+    else:
+        form = DonationConfirmationForm()
+
+    return render(request, 'main/blood_bank_home.html', {
+        'donation_requests': donation_requests,
+        'form': form
+    })
+
+@login_required
+def donation_detail(request, id):
+    # Retrieve all donations made by the donor
+    donations = get_object_or_404(Donation, id=id)
+
+    if request.method == "POST":
+        print(1)
+        form = DonationConfirmationForm(request.POST, instance=donations)
+        if form.is_valid():
+            form.save()
+            return redirect('blood_bank_home')
+    else:
+        form = DonationConfirmationForm()
+
+    return render(request, 'donations/donation_detail.html', {'donations': donations,'form': form})
