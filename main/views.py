@@ -9,6 +9,7 @@ from django.contrib.auth import logout
 from .models import Donation, DonationRequest, FulfilledRequests
 from .forms import DonationRequestForm, DonationConfirmationForm,DonationRequestCreationForm
 from django.utils import timezone
+# 7714927470:AAHT8RMlguaBjQgVLI5yZ5rNn4lsvQAm4ow
 from django.http import JsonResponse
 import requests
 from django.urls import reverse
@@ -42,8 +43,10 @@ def register(request):
     return render(request, 'main/register.html', {'form': form})
 
 
+
 def home(request):
     return render(request, 'main/home.html')
+
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -65,6 +68,7 @@ def login_view(request):
         form = AuthenticationForm()
     return render(request, 'main/login.html', {'form': form})
 
+
 @login_required
 def normal_home(request):
     """View for a donor to create a donation request."""
@@ -83,10 +87,6 @@ def normal_home(request):
     else:
           form = DonationRequestForm()
     return render(request, 'main/normal_home.html', {'form': form,'blood_groupiee':blood_groupiee,'already':already,'notconfirm':notconfirm,'pending':pending})
-
-
-
-
 
 def logout_view(request):
     logout(request)
@@ -243,7 +243,7 @@ def donation_detail(request, id):
 
     return render(request, 'donations/donation_detail.html', {'donations': donations,'form': form})
 
-TELEGRAM_BOT_TOKEN = '7714927470:AAHT8RMlguaBjQgVLI5yZ5rNn4lsvQAm4ow'
+TELEGRAM_BOT_TOKEN = ''
 
 def send_telegram_message(chat_id, message,request_contact=False,reply_markup=None):
     print(request_contact)
@@ -324,7 +324,6 @@ def request_blood_by_phone(request, phone_number):
 def webhook_info(request):
     """Provide instructions for users to connect their Telegram accounts."""
     return render(request, 'another/webhook_info.html')
-
 
 @csrf_exempt
 def telegram_webhook(request):
