@@ -168,28 +168,32 @@ def blood_bank_home(request):
             print(matching_users.count())
             donation_request.sent_requests=matching_users.count()
             donation_request.save()
-            user_id_list = list(matching_users)
-            print(user_id_list)
+            # user_id_list = list(matching_users)
+            # print(user_id_list)
             fulfilled_request = FulfilledRequests.objects.create(donation_req_id=donation_request.id)
-            fulfilled_request.user_ids.set(user_id_list)
-            print(fulfilled_request)
+            # fulfilled_request.user_ids.set(user_id_list)
+            # print(fulfilled_request)
             
             # Find users with the requested blood group
             
             print(matching_users)
-            
-            
-            # Send Telegram messages to all matching users
-            for user in matching_users:
-                inline_keyboard = {
+            inline_keyboard = {
                 "inline_keyboard": [
                 [
-                {"text": "Yes", "callback_data": f"yes_{user.user.telegram_chat_id}"},
-                {"text": "No", "callback_data": f"no_{user.user.telegram_chat_id}"}
+                {"text": "Yes", "callback_data": f"yes_{donation_request.id}"},
+                {"text": "No", "callback_data": f"no_{donation_request.id}"}
                 ]
                 ]
                 }
-                send_telegram_message(user.user.telegram_chat_id, f"A donation request for {donation_request.blood_group} has been made by {donation_request.blood_bank} Hospital. Please respond if you can donate.",request_contact=False,reply_markup=inline_keyboard)
+            
+            message = f'''A donation request for {donation_request.blood_group} has been made by {donation_request.blood_bank} Hospital.
+               The {donation_request.blood_bank} Hospital needs {donation_request.requested_amount} units of {donation_request.blood_group} blood.
+               Its Phone number is {donation_request.blood_bank.user.phone_number} and its address is {donation_request.blood_bank.user.address}.
+               Please respond if you can donate.'''
+            # Send Telegram messages to all matching users
+            for user in matching_users:
+                
+                send_telegram_message(user.user.telegram_chat_id, message,request_contact=False,reply_markup=inline_keyboard)
 
             # Redirect to the summary page with the request ID
             return redirect('donation_request_summary', request_id=donation_request.id)
@@ -221,7 +225,7 @@ def donation_request_summary(request, request_id):
     return render(request, 'donations/donation_request_summary.html', {
         'donation_request': donation_request,
         'all_requestss': donation_request.sent_requests,
-        'accepted_request': accepted_request,
+        'confirmed_request': accepted_request,
         'all_requests': all_requests
     })
 
@@ -352,6 +356,10 @@ def telegram_webhook(request):
              # Process "Yes" or "No" response
              if callback_data.startswith("yes_"):
                 # Edit message text to confirm the action and remove buttons
+                request_id = callback_data.split("_")[1]
+                norm_user=NormalUser.objects.get(user__telegram_chat_id=chat_id)
+                fr_object=FulfilledRequests.objects.get(donation_req_id=request_id)
+                fr_object.user_ids.add(norm_user)
                 edit_message_text(chat_id, message_id, "Thank you for agreeing to help!")
                 return JsonResponse({"status": "success"})
              elif callback_data.startswith("no_"):

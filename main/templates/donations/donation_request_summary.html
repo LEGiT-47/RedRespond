@@ -11,13 +11,13 @@
 
 <p>Total Requests Sent: {{ all_requestss }}</p>
 
-{% if accepted_request %}
-    <h2>Accepted Request</h2>
-    <p>Blood Group: {{ accepted_request.blood_group }}</p>
-    <p>Name: {{ accepted_request.user.username}}</p>
-    <p>Phone Number: {{ accepted_request.user.phone_number }}</p>
+{% if confirmed_request %}
+    <h2>Confirmed Request</h2>
+    <p>Blood Group: {{ confirmed_request.blood_group }}</p>
+    <p>Name: {{ confirmed_request.user.username}}</p>
+    <p>Phone Number: {{ confirmed_request.user.phone_number }}</p>
 {% else %}
-    <p>No accepted requests yet.</p>
+    <p>No confirmed requests yet.</p>
 {% endif %}
 
 <h2>Current Request Details</h2>
@@ -25,7 +25,7 @@
 <p>Requested Amount: {{ donation_request.requested_amount }}</p>
 <p>Status: {{ donation_request.status }}</p>
 
-<h2>ALL THE REQUESTS SENT TO : </h2>
+<h2> Requests Accepted By: </h2>
 {% for request in all_requests %}
     <p> {{ request.user.username }} - {{ request.user.phone_number }}</p>
 {% endfor %}
