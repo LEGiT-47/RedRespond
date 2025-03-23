@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- templates/donation_request_summary.html -->
+<h1>Donation Request Summary</h1>
+
+<p>Total Requests Sent: {{ all_requestss }}</p>
+
+{% if accepted_request %}
+    <h2>Accepted Request</h2>
+    <p>Blood Group: {{ accepted_request.blood_group }}</p>
+    <p>Name: {{ accepted_request.user.username}}</p>
+    <p>Phone Number: {{ accepted_request.user.phone_number }}</p>
+{% else %}
+    <p>No accepted requests yet.</p>
+{% endif %}
+
+<h2>Current Request Details</h2>
+<p>Blood Group: {{ donation_request.blood_group }}</p>
+<p>Requested Amount: {{ donation_request.requested_amount }}</p>
+<p>Status: {{ donation_request.status }}</p>
+
+<h2>ALL THE REQUESTS SENT TO : </h2>
+{% for request in all_requests %}
+    <p> {{ request.user.username }} - {{ request.user.phone_number }}</p>
+{% endfor %}
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit" name="mark_fulfilled" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+        Mark as Fulfilled
+    </button>
+</form>
+
+</body>
+</html>

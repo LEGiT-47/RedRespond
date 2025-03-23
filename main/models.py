@@ -12,6 +12,7 @@ class CustomUser(AbstractUser):
     city = models.CharField(max_length=100, blank=True, null=True)
     state = models.CharField(max_length=100, blank=True, null=True)
     pincode = models.CharField(max_length=10, blank=True, null=True)
+    telegram_chat_id = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
         return self.username
@@ -56,3 +57,30 @@ class Donation(models.Model):
 
     def __str__(self):
         return f"Donation by {self.donor.username} on {self.scheduled_datetime:%Y-%m-%d %H:%M}"
+    
+class DonationRequest(models.Model):
+    blood_bank= models.ForeignKey(BloodBank, on_delete=models.CASCADE, related_name='request_donation')
+    blood_group = models.CharField(max_length=5)
+    requested_amount = models.DecimalField(max_digits=5, decimal_places=2)
+    request_datetime = models.DateTimeField( null=False, blank=False)
+    sent_requests=models.DecimalField(max_digits=10,default=0,decimal_places=0)
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('fulfilled', 'Fulfilled'),
+        ('not_fulfilled', 'Not Fulfilled')
+    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    additional_info = models.TextField(blank=True, null=True)
+    
+
+    def __str__(self):
+        return f"Donation request by {self.blood_bank.organization_name} for {self.blood_group} on {self.request_datetime:%Y-%m-%d %H:%M}"
+    
+class FulfilledRequests(models.Model):
+    # donation_request = models.ForeignKey(DonationRequest, on_delete=models.CASCADE, related_name='fulfilled_requests')
+    donation_req_id = models.DecimalField(max_digits=10, decimal_places=0,null=False, blank=False)
+    fulfilled_by = models.ForeignKey(NormalUser, on_delete=models.CASCADE, related_name='fulfilled_donations',blank=True,null=True)
+    user_ids = models.ManyToManyField(NormalUser, related_name='participated_fulfillments', blank=True)
+
+    def __str__(self):
+        return f"Fulfilled request {self.donation_req_id}"

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import CustomUser, BloodBank, NormalUser, Donation
+from .models import CustomUser, BloodBank, NormalUser, Donation , DonationRequest
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -118,3 +118,45 @@ class DonationConfirmationForm(forms.ModelForm):
                 self.add_error('not_accepted_reason', 'Please provide a reason for not accepting the donation.')
             
             return cleaned_data
+
+class DonationRequestCreationForm(forms.ModelForm):
+                BLOOD_GROUPS = [
+                    ('A+', 'A+'),
+                    ('A-', 'A-'),
+                    ('B+', 'B+'),
+                    ('B-', 'B-'),
+                    ('AB+', 'AB+'),
+                    ('AB-', 'AB-'),
+                    ('O+', 'O+'),
+                    ('O-', 'O-'),
+                ]
+                
+                blood_group = forms.ChoiceField(choices=BLOOD_GROUPS)
+
+                class Meta:
+                    model = DonationRequest
+                    fields = ['blood_group', 'requested_amount', 'additional_info','request_datetime']
+                    widgets = {
+                        
+                        'requested_amount': forms.NumberInput(attrs={
+                            'class': 'w-full px-4 py-3 rounded border border-gray-200 focus:border-red-500 focus:ring focus:ring-red-200 transition duration-300',
+                            'placeholder': 'Enter amount needed',
+                            'step': '10'
+                        }),
+                        'additional_info': forms.Textarea(attrs={
+                            'class': 'w-full px-4 py-3 rounded border border-gray-200 focus:border-red-500 focus:ring focus:ring-red-200 transition duration-300',
+                            'rows': 4,
+                            'placeholder': 'Enter any additional information'
+                        }),
+                        'request_datetime': forms.DateTimeInput(attrs={
+                            'type': 'datetime-local',
+                            'class': 'w-full px-4 py-3 rounded border border-gray-200 focus:border-red-500 focus:ring focus:ring-red-200 transition duration-300'
+                        })
+                    }
+
+                def __init__(self, *args, **kwargs):
+                    super().__init__(*args, **kwargs)
+                    self.fields['requested_amount'].label = "Amount Needed (units)"
+                    self.fields['blood_group'].widget.attrs.update({
+                        'class': 'w-full px-4 py-3 rounded border border-gray-200 focus:border-red-500 focus:ring focus:ring-red-200 transition duration-300'
+                    })
