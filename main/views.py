@@ -216,8 +216,12 @@ def donation_request_summary(request, request_id):
     fulfilled_request = get_object_or_404(FulfilledRequests, donation_req_id=request_id)
     all_requests = fulfilled_request.user_ids.all()
 
-    if request.method == "POST" and 'mark_fulfilled' in request.POST:
+    if request.method == "POST" and 'mark_fulfilled' in request.POST and donation_request.status == 'pending':
         # Update the status to 'fulfilled'
+        fulfilled_request_id = request.POST.get('fulfilled_request_id')
+        fulfilled_request.fulfilled_by=get_object_or_404(NormalUser, user__id=fulfilled_request_id)
+        fulfilled_request.save()
+        get_object_or_404(FulfilledRequests, donation_req_id=request_id).user_ids.remove(NormalUser.objects.get(user__id=fulfilled_request_id))
         donation_request.status = 'fulfilled'
         donation_request.save()
         return redirect('donation_request_summary', request_id=request_id)
@@ -226,7 +230,8 @@ def donation_request_summary(request, request_id):
         'donation_request': donation_request,
         'all_requestss': donation_request.sent_requests,
         'confirmed_request': accepted_request,
-        'all_requests': all_requests
+        'all_requests': all_requests,
+        'request_id': request_id
     })
 
 
