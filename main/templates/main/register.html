@@ -783,11 +783,26 @@
                         </div>
                     {% endif %}
                 </div>
+                <button id="getLocation" name="get_location" type="button" class="w-full bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-[1.02] font-medium flex items-center justify-center gap-2 shadow-lg shadow-red-200">
+                    <span id="circletick" class="material-symbols-outlined" style="display: none;">check_circle</span> Get My Location
+                </button>
+
+                <div id="id_loc_lat" name="loc_lat" style="width: 0; height: 0; opacity: 0;"></div>
+                <div id="id_loc_lon" name="loc_lon" style="width: 0; height: 0; opacity: 0;"></div>
         
                 <!-- Submit Button -->
-                <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-[1.02] font-medium flex items-center justify-center gap-2 shadow-lg shadow-red-200">
-                    <span class="material-symbols-outlined">volunteer_activism</span> Create Account
+                <button type="submit" onclick="checkLocation(event)" class="submitter w-full bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-[1.02] font-medium flex items-center justify-center gap-2 shadow-lg shadow-red-200 ">
+                  <span class="material-symbols-outlined">volunteer_activism</span> Create Account
                 </button>
+
+                <script>
+                function checkLocation(e) {
+                  if (!document.getElementById('id_loc_lat').value) {
+                    e.preventDefault();
+                    alert('Please click "Get My Location" first');
+                  }
+                }
+                </script>
             </div>
         </form>
         
@@ -813,8 +828,33 @@
                 userTypeField.addEventListener("change", toggleFields);
                 toggleFields(); // Call initially to set correct state
             });
-        </script>
         
+          const getLocationBtn = document.getElementById('getLocation');
+          getLocationBtn.addEventListener('click', () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        // Create hidden form fields for lat/lon
+                        const form = document.querySelector('form');
+                        const latInput = document.createElement('input');
+                        const lonInput = document.createElement('input');
+                        
+                        document.getElementById('id_loc_lat').value = lat;
+                        document.getElementById('id_loc_lon').value = lon;
+                        document.getElementById('circletick').style.display = 'block';
+                    },
+                    (error) => {
+                        console.error(error);
+                        coordinatesDisplay.innerText = "Unable to retrieve location.";
+                    }
+                );
+            } else {
+                coordinatesDisplay.innerText = "Geolocation is not supported by your browser.";
+            }
+        });
+        </script>
         </div> 
       </div>
     </div>

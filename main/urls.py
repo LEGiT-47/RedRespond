@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.home, name='home'),
+    # path('', views.home, name='home'),
     path('register/', views.register, name='register'),
     path('login/', views.login_view, name='login'),
     path('normal-home/', views.normal_home, name='normal_home'),
@@ -19,4 +19,6 @@ urlpatterns = [
     path('webhook-info/', views.webhook_info, name='webhook_info'),
     path('webhook/', views.telegram_webhook, name='telegram_webhook'),
     path('donation-request-summary/<int:request_id>/', views.donation_request_summary, name='donation_request_summary'),
+    path('', views.blood_bank_locator, name='blood_bank_locator'),
+    path('find-blood-banks/', views.find_blood_banks, name='find_blood_banks'),
 ]

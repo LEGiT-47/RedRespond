@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Bank Locator</title>
+</head>
+<body>
+    <h2>Blood Bank Locator</h2>
+    <p id="status">Click the button to allow location access:</p>
+    <button onclick="getUserLocation()">Find Blood Banks Near Me</button>
+    
+    <div id="results"></div>
+
+    <script>
+        let searchRadius = 5;  // Start with 5km
+        const maxRadius = 20;  // Limit to 20km
+
+        function getUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        let userLat = position.coords.latitude;
+                        let userLon = position.coords.longitude;
+                        document.getElementById('status').innerText = "Location found! Searching for blood banks...";
+                        searchBloodBanks(userLat, userLon);
+                    },
+                    error => {
+                        document.getElementById('status').innerText = "Location access denied. Cannot fetch blood banks.";
+                        console.error("Geolocation error:", error);
+                    },
+                    { enableHighAccuracy: true }
+                );
+            } else {
+                document.getElementById('status').innerText = "Geolocation is not supported by your browser.";
+            }
+        }
+
+        function searchBloodBanks(lat, lon) {
+            let url = `/find-blood-banks/?lat=${lat}&lon=${lon}&radius=${searchRadius}`;
+            console.log("Searching with radius:", searchRadius, "km");
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('status').innerText = "Error: " + data.error;
+                    } else if (data.blood_banks.length > 0) {
+                        displayResults(data.blood_banks, data.radius_used);
+                    } else if (searchRadius < maxRadius) {
+                        searchRadius += 1;  // Increase search radius by 1 km
+                        document.getElementById('status').innerText = `No blood banks found within ${searchRadius - 1} km. Expanding search to ${searchRadius} km...`;
+                        setTimeout(() => searchBloodBanks(lat, lon), 1000);  // Wait 1 second before retrying
+                    } else {
+                        document.getElementById('status').innerText = "No blood banks found within 20 km.";
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('status').innerText = "Error fetching data.";
+                    console.error(error);
+                });
+        }
+
+        function displayResults(bloodBanks, radiusUsed) {
+            let resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `<h3>Found ${bloodBanks.length} blood bank(s) within ${radiusUsed} km:</h3>`;
+
+            let list = "<ul>";
+            bloodBanks.forEach(bank => {
+                list += `<li><strong>${bank.name}</strong><br>Distance: ${bank.distance} km<br>Address: ${bank.address}</li>`;
+            });
+            list += "</ul>";
+
+            resultsDiv.innerHTML += list;
+        }
+        function displayResults(bloodBanks) {
+            let resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `<h3>Found ${bloodBanks.length} blood bank(s) nearby:</h3>`;
+            if (bloodBanks.length === 0) {
+                resultsDiv.innerHTML += "<p>No blood banks found within the search radius.</p>";
+                return;
+            }
+            
+            let list = "<ul>";
+                bloodBanks.forEach(bank => {
+                    let distanceText = bank.distance !== undefined ? `${bank.distance} km` : "Calculating...";
+                    list += `<li><strong>${bank.name}</strong><br>Distance: ${distanceText}<br>Address: ${bank.address}</li>`;
+                });
+                list += "</ul>";
+
+                resultsDiv.innerHTML += list;
+}
+    </script>
+</body>
+</html>

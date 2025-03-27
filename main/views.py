@@ -21,21 +21,31 @@ def register(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
+            latitude = request.POST.get('latitude')
+            print(latitude)
+            longitude = request.POST.get('longitude')
+            print(longitude)
             user.save()
 
             # Save additional fields
             if user.user_type == 'blood_bank':
-                BloodBank.objects.create(
+                b1=BloodBank.objects.create(
                     user=user,
                     organization_name=form.cleaned_data['organization_name'],
+
                 )
+                b1.user.loc_latitude = latitude
+                b1.user.loc_longitude = longitude
                 login(request, user)
                 return redirect('blood_bank_home')  # Redirect blood bank users to their home
             elif user.user_type == 'normal':
-                NormalUser.objects.create(
+                b1=NormalUser.objects.create(
                     user=user,
                     blood_group=form.cleaned_data['blood_group'],
+
                 )
+                b1.user.loc_latitude = latitude
+                b1.user.loc_longitude = longitude
                 login(request, user)
                 return redirect('normal_home')  # Redirect normal users to their home
     else:
@@ -420,3 +430,61 @@ def edit_message_text(chat_id, message_id, new_text):
     }
     response = requests.post(url, json=payload)
     return response.ok
+
+def haversine_distance(lat1, lon1, lat2, lon2):
+    import math
+    R = 6371  # Radius of Earth in km
+
+    # Ensure all inputs are floats
+    lat1, lon1, lat2, lon2 = map(float, [lat1, lon1, lat2, lon2])
+
+    dLat = math.radians(lat2 - lat1)
+    dLon = math.radians(lon2 - lon1)
+    a = math.sin(dLat / 2) ** 2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dLon / 2) ** 2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    return round(R * c, 2)
+
+def blood_bank_locator(request):
+    return render(request, "main/blood_bank_locator.html")
+
+def find_blood_banks(request):
+    lat = request.GET.get('lat')
+    lon = request.GET.get('lon')
+
+    if not lat or not lon:
+        return JsonResponse({"error": "Missing latitude or longitude"}, status=400)
+
+    try:
+        lat, lon = float(lat), float(lon)
+    except ValueError:
+        return JsonResponse({"error": "Invalid latitude or longitude"}, status=400)
+
+    blood_banks = BloodBank.objects.all()
+    blood_banks = [
+        {
+            "name": bank.organization_name,
+            "lat": bank.user.loc_latitude,
+            "lon": bank.user.loc_longitude,
+            "address": bank.user.address,
+            "phone_number": bank.user.phone_number
+        }
+        for bank in blood_banks
+    ]
+
+    radius = 5
+    max_radius = 20
+    nearby_banks = []
+
+    while radius <= max_radius:
+        nearby_banks = []
+        for bank in blood_banks:
+            distance = haversine_distance(lat, lon, bank["lat"], bank["lon"])
+            if distance <= radius:
+                bank["distance"] = distance  # ✅ Explicitly add distance here!
+                nearby_banks.append(bank)
+
+        if nearby_banks:
+            break
+        radius += 1
+
+    return JsonResponse({"blood_banks": nearby_banks, "radius_used":radius})

@@ -13,6 +13,8 @@ class CustomUser(AbstractUser):
     state = models.CharField(max_length=100, blank=True, null=True)
     pincode = models.CharField(max_length=10, blank=True, null=True)
     telegram_chat_id = models.CharField(max_length=50, blank=True, null=True)
+    loc_latitude = models.DecimalField(max_digits=10, decimal_places=7, default=19.1674517)
+    loc_longitude = models.DecimalField(max_digits=10, decimal_places=7, default=72.8513831)
 
     def __str__(self):
         return self.username
