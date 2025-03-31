@@ -37,6 +37,13 @@
                   >{{blood_groupiee.blood_group}}</span
                 >
               </div>
+              <a href="{% url 'blood_bank_search' %}">
+                <button
+                  class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105 flex items-center space-x-2"
+                >
+                  <span class="material-symbols-outlined mr-2">logout</span>
+                  Search
+                </button></a>
               <a href="{% url 'logout' %}">
               <button
                 class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105 flex items-center space-x-2"

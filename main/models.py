@@ -15,6 +15,7 @@ class CustomUser(AbstractUser):
     telegram_chat_id = models.CharField(max_length=50, blank=True, null=True)
     loc_latitude = models.DecimalField(max_digits=10, decimal_places=7, default=19.1674517)
     loc_longitude = models.DecimalField(max_digits=10, decimal_places=7, default=72.8513831)
+    email = models.EmailField(unique=False, blank=True, null=True)
 
     def __str__(self):
         return self.username
@@ -22,10 +23,42 @@ class CustomUser(AbstractUser):
 class BloodBank(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='blood_bank')
     organization_name = models.CharField(max_length=255)
+    website = models.URLField(blank=True, null=True)
+    max_capacity_per_group = models.PositiveIntegerField(default=100)  # Set default max capacity per group.
+    a0=models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    a1=models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    b0=models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    b1=models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    ab0=models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    ab1=models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    o0=models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    o1=models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+
+    def calculate_stock_percentage(self,blood_group):
+        if blood_group == 'A+':
+            return round((self.a1 / self.max_capacity_per_group) * 100, 2)
+        elif blood_group == 'A-':
+            return round((self.a0 / self.max_capacity_per_group) * 100, 2)
+        elif blood_group == 'B+':
+            return round((self.b1 / self.max_capacity_per_group) * 100, 2)
+        elif blood_group == 'B-':
+            return round((self.b0 / self.max_capacity_per_group) * 100, 2)
+        elif blood_group == 'AB+':
+            return round((self.ab1 / self.max_capacity_per_group) * 100, 2)
+        elif blood_group == 'AB-':
+            return round((self.ab0 / self.max_capacity_per_group) * 100, 2)
+        elif blood_group == 'O+':
+            return round((self.o1 / self.max_capacity_per_group) * 100, 2)
+        elif blood_group == 'O-':
+            return round((self.o0 / self.max_capacity_per_group) * 100, 2)
+        else:
+            return 0.00
+
 
     def __str__(self):
         return self.organization_name
 
+    
 class NormalUser(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='normal_user')
     blood_group = models.CharField(max_length=5)

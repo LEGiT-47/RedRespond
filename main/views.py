@@ -6,7 +6,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth import logout
-from .models import Donation, DonationRequest, FulfilledRequests
+from .models import Donation, DonationRequest, FulfilledRequests 
 from .forms import DonationRequestForm, DonationConfirmationForm,DonationRequestCreationForm
 from django.utils import timezone
 # 7714927470:AAHT8RMlguaBjQgVLI5yZ5rNn4lsvQAm4ow
@@ -15,6 +15,7 @@ import requests
 from django.urls import reverse
 import json
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
 
 def register(request):
     if request.method == 'POST':
@@ -163,8 +164,30 @@ def blood_bank_home(request):
         return redirect('home')  # Redirect if user is not a blood bank
 
     donation_requests = Donation.objects.filter(blood_bank=blood_bank, status='not_confirmed')
+    upcoming_donations=Donation.objects.filter(blood_bank=blood_bank, status='pending')
+    for donation in upcoming_donations:
+        donation.donor_blood_group = NormalUser.objects.get(user=donation.donor).blood_group
+    count_pending = donation_requests.count()
+
+    user_requests = get_object_or_404(BloodBank, user=request.user)
+
     if request.method == "POST":
         form = DonationRequestCreationForm(request.POST)
+        requested = {
+            'a0': Decimal(request.POST.get('a0', user_requests.a0)),
+            'a1': Decimal(request.POST.get('a1', user_requests.a1)),
+            'b0': Decimal(request.POST.get('b0', user_requests.b0)),
+            'b1': Decimal(request.POST.get('b1', user_requests.b1)),
+            'ab0': Decimal(request.POST.get('ab0', user_requests.ab0)),
+            'ab1': Decimal(request.POST.get('ab1', user_requests.ab1)),
+            'o0': Decimal(request.POST.get('o0', user_requests.o0)),
+            'o1': Decimal(request.POST.get('o1', user_requests.o1)),
+        }
+        
+        # Update the user_requests instance
+        for key, value in requested.items():
+            setattr(user_requests, key, value)
+        user_requests.save()
 
         
         if form.is_valid():
@@ -207,14 +230,33 @@ def blood_bank_home(request):
 
             # Redirect to the summary page with the request ID
             return redirect('donation_request_summary', request_id=donation_request.id)
-
-    
     else:
         form = DonationRequestCreationForm()
+    percentage_all = {
+        'a0': user_requests.calculate_stock_percentage('A-'),
+        'a1': user_requests.calculate_stock_percentage('A+'),
+        'b0': user_requests.calculate_stock_percentage('B-'),
+        'b1': user_requests.calculate_stock_percentage('B+'),
+        'ab0': user_requests.calculate_stock_percentage('AB-'),
+        'ab1': user_requests.calculate_stock_percentage('AB+'),
+        'o0': user_requests.calculate_stock_percentage('O-'),
+        'o1': user_requests.calculate_stock_percentage('O+'),
+    }
+    donations_count={
+        'not_confirmed':count_pending,
+        'donated':Donation.objects.filter(blood_bank=blood_bank, status='donated').count(),
+        'pending':Donation.objects.filter(blood_bank=blood_bank, status='pending').count(),
+        'total_stock':user_requests.a0 + user_requests.a1 +user_requests.b0 + user_requests.b1 +user_requests.ab0 + user_requests.ab1 +user_requests.o0 + user_requests.o1,
+    }
 
-    return render(request, 'main/blood_bank_home.html', {
+    return render(request, 'main/blood_bank_dashboard.html', {
         'donation_requests': donation_requests,
-        'form': form
+        'upcoming_donations': upcoming_donations,
+        'form': form,
+        'user_requests': user_requests,
+        'percentage_all': percentage_all,
+        'donations_count':donations_count,
+        'blood_bank': blood_bank,
     })
 
 @login_required
@@ -448,6 +490,10 @@ def blood_bank_locator(request):
     return render(request, "main/blood_bank_locator.html")
 
 def find_blood_banks(request):
+  if request.method != 'GET':
+        sorted_blood_banks = BloodBank.objects.all()
+        return render(request,"main/bloodbank_search.html", {'all_requests': sorted_blood_banks})
+  else:  
     lat = request.GET.get('lat')
     lon = request.GET.get('lon')
 
@@ -459,32 +505,78 @@ def find_blood_banks(request):
     except ValueError:
         return JsonResponse({"error": "Invalid latitude or longitude"}, status=400)
 
-    blood_banks = BloodBank.objects.all()
-    blood_banks = [
-        {
-            "name": bank.organization_name,
-            "lat": bank.user.loc_latitude,
-            "lon": bank.user.loc_longitude,
-            "address": bank.user.address,
-            "phone_number": bank.user.phone_number
-        }
-        for bank in blood_banks
-    ]
+    blood_banks_data= list(BloodBank.objects.all())
+    
+    # Calculate distances and sort by nearest
+    for bank in blood_banks_data:
+        bank["distance"] = haversine_distance(lat, lon, bank["lat"], bank["lon"])
 
-    radius = 5
-    max_radius = 20
-    nearby_banks = []
+    sorted_blood_banks = sorted(blood_banks_data, key=lambda x: x["distance"])
 
-    while radius <= max_radius:
-        nearby_banks = []
-        for bank in blood_banks:
-            distance = haversine_distance(lat, lon, bank["lat"], bank["lon"])
-            if distance <= radius:
-                bank["distance"] = distance  # ✅ Explicitly add distance here!
-                nearby_banks.append(bank)
+  return render(request,"main/bloodbank_search.html", {'all_requests': sorted_blood_banks})
 
-        if nearby_banks:
-            break
-        radius += 1
 
-    return JsonResponse({"blood_banks": nearby_banks, "radius_used":radius})
+from django.shortcuts import render
+import json
+
+def bbsearch(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)  # Parse JSON data from the request
+            lat = data.get('lat')
+            lon = data.get('lon')
+
+            if not lat or not lon:
+                return JsonResponse({"error": "Missing latitude or longitude"}, status=400)
+
+            lat, lon = float(lat), float(lon)
+
+            # Fetch blood banks
+            blood_banks = BloodBank.objects.all()
+            blood_banks_data = [
+                {
+                    "name": bank.organization_name,
+                    "lat": bank.user.loc_latitude,
+                    "lon": bank.user.loc_longitude,
+                    "address": bank.user.address,
+                    "phone_number": bank.user.phone_number,
+                    "email": bank.user.email,
+                }
+                for bank in blood_banks
+            ]
+
+            # Calculate distances and sort by nearest
+            for bank in blood_banks_data:
+                bank["distance"] = haversine_distance(lat, lon, bank["lat"], bank["lon"])
+
+            sorted_blood_banks = sorted(blood_banks_data, key=lambda x: x["distance"])
+
+            # Pass the sorted data to the template
+            return render(request, "main/bloodbank_search.html", {'all_requests': sorted_blood_banks})
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    # Render default template for GET requests
+    return render(request, "main/bloodbank_search.html", {'all_requests': BloodBank.objects.all()})
+
+from decimal import Decimal
+
+def blood_bank_profile(request, bank_id):
+    user_requests = get_object_or_404(BloodBank, id=bank_id)
+
+    percentage_all = {
+        'a0': user_requests.calculate_stock_percentage('A-'),
+        'a1': user_requests.calculate_stock_percentage('A+'),
+        'b0': user_requests.calculate_stock_percentage('B-'),
+        'b1': user_requests.calculate_stock_percentage('B+'),
+        'ab0': user_requests.calculate_stock_percentage('AB-'),
+        'ab1': user_requests.calculate_stock_percentage('AB+'),
+        'o0': user_requests.calculate_stock_percentage('O-'),
+        'o1': user_requests.calculate_stock_percentage('O+'),
+    }
+    context = {
+        'user_requests': user_requests,
+        'percentage_all': percentage_all,
+    }
+    return render(request, 'main/blood_bank_profile.html', context)

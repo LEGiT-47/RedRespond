@@ -735,10 +735,8 @@
                 <div>
                     <label for="id_user_type" class="block text-sm font-medium mb-2">Account Type</label>
                     <select name="user_type" id="id_user_type" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-300 outline-none hover:border-red-300">
-                        <option value="normal" {% if form.user_type.value == 'normal' %}selected{% endif %}>Individual Donor</option>
+                        <option value="normal" {% if form.user_type.value == 'normal' %}selected{% endif %}>Normal Donor</option>
                         <option value="blood_bank" {% if form.user_type.value == 'blood_bank' %}selected{% endif %}>Blood Bank</option>
-                        <option value="hospital" {% if form.user_type.value == 'hospital' %}selected{% endif %}>Hospital</option>
-                        <option value="ngo" {% if form.user_type.value == 'ngo' %}selected{% endif %}>NGO</option>
                     </select>
                     {% if form.user_type.errors %}
                         <div class="text-red-500 text-sm">
@@ -783,6 +781,17 @@
                         </div>
                     {% endif %}
                 </div>
+                <div id="website-field" style="display: none;">
+                  <label for="id_website" class="block text-sm font-medium mb-2">Website</label>
+                 <input type="text" name="website" id="id_website" value="{{ form.website.value }}" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-300 outline-none hover:border-red-300" placeholder="For Blood Banks & Hospitals">
+                  {% if form.website.errors %}
+                      <div class="text-red-500 text-sm">
+                          {% for error in form.website.errors %}
+                              <p>{{ error }}</p>
+                          {% endfor %}
+                      </div>
+                  {% endif %}
+              </div>
                 <button id="getLocation" name="get_location" type="button" class="w-full bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-[1.02] font-medium flex items-center justify-center gap-2 shadow-lg shadow-red-200">
                     <span id="circletick" class="material-symbols-outlined" style="display: none;">check_circle</span> Get My Location
                 </button>
@@ -811,17 +820,21 @@
                 const userTypeField = document.getElementById("id_user_type");
                 const organizationField = document.getElementById("organization-name-field");
                 const bloodGroupField = document.getElementById("blood-group-field");
+                const websiteField = document.getElementById("website-field")
         
                 function toggleFields() {
                     if (userTypeField.value === "blood_bank") {
                         organizationField.style.display = "block";
                         bloodGroupField.style.display = "none";
+                        websiteField.style.display = "block";
                     } else if (userTypeField.value === "normal") {
                         organizationField.style.display = "none";
                         bloodGroupField.style.display = "block";
+                        websiteField.style.display = "none";
                     } else {
                         organizationField.style.display = "none";
                         bloodGroupField.style.display = "none";
+                        websiteField.style.display = "none";
                     }
                 }
         

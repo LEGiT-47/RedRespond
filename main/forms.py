@@ -12,6 +12,7 @@ class CustomUserCreationForm(UserCreationForm):
     user_type = forms.ChoiceField(choices=CustomUser.USER_TYPE_CHOICES, required=True)
     organization_name = forms.CharField(max_length=255, required=False)
     blood_group = forms.CharField(max_length=5, required=False)
+    website=forms.URLField(required=False)
 
     class Meta:
         model = CustomUser
@@ -26,9 +27,16 @@ class CustomUserCreationForm(UserCreationForm):
         user_type = cleaned_data.get('user_type')
         organization_name = cleaned_data.get('organization_name')
         blood_group = cleaned_data.get('blood_group')
+        website=cleaned_data.get('website')
 
-        if user_type == 'blood_bank' and not organization_name:
-            self.add_error('organization_name', 'This field is required for Blood Banks.')
+        if user_type == 'blood_bank' and not organization_name and not website:
+            if(not organization_name ):
+               self.add_error('organization_name ', 'This field is required for Blood Banks.')
+            elif(not website):
+                self.add_error('website', 'This field is required for Blood Banks.')
+            else:
+                 self.add_error('organization_name', 'This field is required for Blood Banks.')
+                 self.add_error('website', 'This field is required for Blood Banks.')
         elif user_type == 'normal' and not blood_group:
             self.add_error('blood_group', 'This field is required for Normal Users.')
 

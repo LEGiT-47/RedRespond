@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CustomUser, BloodBank, NormalUser, Donation, DonationRequest, FulfilledRequests
+from .models import CustomUser, BloodBank, NormalUser, Donation, DonationRequest, FulfilledRequests 
 
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
@@ -8,7 +8,7 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 @admin.register(BloodBank)
 class BloodBankAdmin(admin.ModelAdmin):
-    list_display = ('organization_name', 'user')
+    list_display = ('organization_name', 'user', 'max_capacity_per_group', 'a0', 'a1', 'b0', 'b1', 'ab0', 'ab1', 'o0', 'o1')
 
 @admin.register(NormalUser)
 class NormalUserAdmin(admin.ModelAdmin):
@@ -42,3 +42,4 @@ class FulfilledRequestsAdmin(admin.ModelAdmin):
     def get_user_ids(self, obj):
         return ", ".join([str(user) for user in obj.user_ids.all()])
     get_user_ids.short_description = 'Participating Users'
+
