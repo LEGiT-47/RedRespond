@@ -23,7 +23,7 @@
                                     d="M12 2c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10-4.48-10-10-10zm-1 15h-2v-6h2v6zm4 0h-2v-6h2v6zm-2-8c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"
                                 ></path>
                             </svg>
-                            <h1 class="text-2xl font-bold">BloodBank Finder</h1>
+                            <h1 class="text-2xl font-bold">RedRespond</h1>
                         </div>
                         <div class="hidden md:flex space-x-6">
                             <a
@@ -52,18 +52,7 @@
                                 >Contact</a
                             >
                         </div>
-                        <div class="flex items-center space-x-3">
-                            <button
-                                class="bg-white text-red-600 px-4 py-2 rounded-lg font-medium hover:bg-red-100 transition duration-300"
-                            >
-                                Sign In
-                            </button>
-                            <button
-                                class="border border-white px-4 py-2 rounded-lg font-medium hover:bg-white hover:text-red-600 transition duration-300"
-                            >
-                                Register
-                            </button>
-                        </div>
+                        
                     </div>
                 </nav>
                 <div class="p-6 bg-gray-50">
@@ -249,12 +238,13 @@
                             </div>
                             <div class="flex gap-2">
         
-                                <button
+                                <a
                                     class="flex-1 border border-red-600 text-red-600 py-2 rounded-lg hover:bg-red-50 transition duration-300"
-                                    onclick="window.location.href=''"
+                                    href="{% url 'blood_bank_dashboard' bloodbank.id %}"
+                                    style="text-align:center"
                                 >
                                     View Details
-                                </button>
+                            </a>
                             </div>
                         </div>
                     </div>

@@ -142,7 +142,9 @@ def donation_requests_view(request):
 @login_required
 def past_donations_view(request):
     """View for a donor to see all confirmed (past) donations."""
-    past_donations = Donation.objects.filter(donor=request.user, confirmed=True)
+    past_donations = Donation.objects.filter(donor=request.user, status='donated')
+    for hell in past_donations:
+        hell.blood_group= get_object_or_404(NormalUser,user=request.user).blood_group
     return render(request, 'donations/past_donations.html', {'past_donations': past_donations})
 
 @login_required
@@ -541,6 +543,7 @@ def bbsearch(request):
                     "address": bank.user.address,
                     "phone_number": bank.user.phone_number,
                     "email": bank.user.email,
+                    "id":bank.id,
                 }
                 for bank in blood_banks
             ]
@@ -564,6 +567,18 @@ from decimal import Decimal
 
 def blood_bank_profile(request, bank_id):
     user_requests = get_object_or_404(BloodBank, id=bank_id)
+    blood_bank=user_requests
+    donation_requests = Donation.objects.filter(blood_bank=user_requests, status='not_confirmed')
+    upcoming_donations=Donation.objects.filter(blood_bank=user_requests, status='pending')
+    for donation in upcoming_donations:
+        donation.donor_blood_group = NormalUser.objects.get(user=donation.donor).blood_group
+    count_pending = donation_requests.count()
+    donations_count={
+        'not_confirmed':count_pending,
+        'donated':Donation.objects.filter(blood_bank=user_requests, status='donated').count(),
+        'pending':Donation.objects.filter(blood_bank=user_requests, status='pending').count(),
+        'total_stock':user_requests.a0 + user_requests.a1 +user_requests.b0 + user_requests.b1 +user_requests.ab0 + user_requests.ab1 +user_requests.o0 + user_requests.o1,
+    }
 
     percentage_all = {
         'a0': user_requests.calculate_stock_percentage('A-'),
@@ -577,6 +592,16 @@ def blood_bank_profile(request, bank_id):
     }
     context = {
         'user_requests': user_requests,
+        'donation_requests': donation_requests,
+        'upcoming_donations': upcoming_donations,
         'percentage_all': percentage_all,
+        'donations_count':donations_count,
+        'blood_bank': blood_bank,
     }
-    return render(request, 'main/blood_bank_profile.html', context)
+    return render(request, 'main/blood_bank_profile1111.html', context)
+
+
+
+
+
+    
