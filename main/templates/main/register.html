@@ -783,7 +783,7 @@
                 </div>
                 <div id="website-field" style="display: none;">
                   <label for="id_website" class="block text-sm font-medium mb-2">Website</label>
-                 <input type="text" name="website" id="id_website" value="{{ form.website.value }}" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-300 outline-none hover:border-red-300" placeholder="For Blood Banks & Hospitals">
+                 <input type="text" name="website" id="id_website" value="{% if form.website.value and form.website.value != 'None' %}{{ form.website.value }}{% else %}https://www.example.com{% endif %}" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-300 outline-none hover:border-red-300" placeholder="For Blood Banks & Hospitals">
                   {% if form.website.errors %}
                       <div class="text-red-500 text-sm">
                           {% for error in form.website.errors %}

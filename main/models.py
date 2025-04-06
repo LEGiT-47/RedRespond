@@ -23,7 +23,7 @@ class CustomUser(AbstractUser):
 class BloodBank(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='blood_bank')
     organization_name = models.CharField(max_length=255)
-    website = models.URLField(blank=True, null=True)
+    website = models.URLField(default='https://example.com')
     max_capacity_per_group = models.PositiveIntegerField(default=100)  # Set default max capacity per group.
     a0=models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
     a1=models.DecimalField(max_digits=5, decimal_places=2, default=0.00)

@@ -41,7 +41,7 @@
                 <button
                   class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105 flex items-center space-x-2"
                 >
-                  <span class="material-symbols-outlined mr-2">logout</span>
+                  <span class="material-symbols-outlined mr-2">search</span>
                   Search
                 </button></a>
               <a href="{% url 'logout' %}">
@@ -168,6 +168,7 @@
             >
               <h2 class="text-3xl font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent mb-8">Past Donations</h2>
                 <div class="space-y-4" style="height: 200px; overflow-y: auto;">
+                {% if already %}
                 {% for donation in already %}
                 <div
                   class="border rounded-lg p-4 hover:bg-gray-50 transition-colors cursor-pointer"
@@ -197,6 +198,9 @@
                   </div>
                 </div>
                 {% endfor %}
+                {% else %}
+                <p class=" font-semibold">No past donations</p>
+                {% endif %}
                 
                 </div>
              
@@ -309,6 +313,7 @@
             >
               <h2 class="text-2xl font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent mb-8">Pending Donations</h2>
               <div class="space-y-4" style="height: 200px; overflow-y: auto;">
+              {% if pending %}
               {% for donation in pending %}
               <div
                 class="border rounded-lg p-4 hover:bg-gray-50 transition-colors cursor-pointer"
@@ -338,6 +343,9 @@
                 </div>
               </div>
               {% endfor %}
+              {% else %}
+              <p class=" font-semibold">No pending donations</p>
+              {% endif %}
               </div>
               </div>
               <div

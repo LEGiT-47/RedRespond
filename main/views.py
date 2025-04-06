@@ -20,7 +20,10 @@ from django.contrib import messages
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
+        print(1)
+        print(form.errors)
         if form.is_valid():
+            print(2)
             user = form.save(commit=False)
             latitude = request.POST.get('latitude')
             print(latitude)
@@ -83,6 +86,10 @@ def login_view(request):
 @login_required
 def normal_home(request):
     """View for a donor to create a donation request."""
+    if request.user.is_authenticated:
+        profile = get_object_or_404(NormalUser, user=request.user)  # replace with actual model
+        if not profile.user.telegram_chat_id:
+            return redirect('connect_telegram')
     blood_groupiee=NormalUser.objects.get(user=request.user)
     # past_donations = Donation.objects.filter(donor=request.user).exclude(status='not_confirmed',status='not_accepted')
     already = Donation.objects.filter(donor=request.user,  status='donated')
@@ -102,6 +109,15 @@ def normal_home(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+@login_required
+def connect_telegram(request):
+    if request.user.is_authenticated:
+        profile = get_object_or_404(NormalUser, user=request.user)  # replace with actual model
+        if profile.user.telegram_chat_id:
+            return redirect('normal_home')
+    return render(request, 'main/connect_telegram.html')
+
 
 @login_required
 def donation_request_success_view(request):
@@ -429,11 +445,14 @@ def telegram_webhook(request):
             # Handle contact sharing
             if contact and not NormalUser.objects.filter(user__telegram_chat_id=chat_id).exists():
              phone_number = contact.get('phone_number')
-             phone_number = phone_number[2:]  # Remove first 3 characters
+             phone_number = phone_number[3:]  # Remove first 3 characters
              chat_id = contact.get('user_id')
+             print(phone_number)
              user = get_object_or_404(NormalUser, user__phone_number=phone_number)
              print(chat_id)
              user.user.telegram_chat_id = chat_id
+             print(user.user.telegram_chat_id)
+             user.user.save()
              return JsonResponse({"status": "success", "phone_number": phone_number})
 
             # Handle /start command
