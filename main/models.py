@@ -66,7 +66,7 @@ class NormalUser(models.Model):
     def __str__(self):
         return self.user.username
 
-
+from django.utils.timezone import now
 
 class Donation(models.Model):
     donor = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='donations')
@@ -92,6 +92,15 @@ class Donation(models.Model):
 
     def __str__(self):
         return f"Donation by {self.donor.username} on {self.scheduled_datetime:%Y-%m-%d %H:%M}"
+    
+    def update_status(self):
+        current_time = now()
+        if self.status == 'pending' and self.scheduled_datetime < current_time:
+            self.status = 'donated'
+        elif self.status == 'not_confirmed' and self.scheduled_datetime < current_time:
+            self.status = 'not_accepted'
+            self.not_accepted_reason = "The scheduled time has passed without confirmation."
+        self.save()
     
 class DonationRequest(models.Model):
     blood_bank= models.ForeignKey(BloodBank, on_delete=models.CASCADE, related_name='request_donation')

@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',
+    'django_celery_beat',
+    'donation_tasks'
 ]
 
 MIDDLEWARE = [
@@ -141,3 +143,16 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 LOGIN_URL = '/login/'
 
+
+# Celery settings
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+
+
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'RedRespond.settings')
+# Redis as the message broker
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Or your broker URL (Redis, RabbitMQ, etc.)
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # Optional, if you want to store results
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
