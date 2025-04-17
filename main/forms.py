@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser, BloodBank, NormalUser, Donation , DonationRequest
-
+import datetime
 
 class CustomUserCreationForm(UserCreationForm):
     phone_number = forms.CharField(max_length=15, required=True)
@@ -64,14 +64,16 @@ class DonationRequestForm(forms.ModelForm):
             'scheduled_datetime': forms.DateTimeInput(
             attrs={
             'type': 'datetime-local',
-            'class': 'w-full px-4 py-3 rounded border border-gray-200 focus:border-red-500 focus:ring focus:ring-red-200 transition duration-300'
+            'class': 'w-full px-4 py-3 rounded border border-gray-200 focus:border-red-500 focus:ring focus:ring-red-200 transition duration-300',
+            'min': (datetime.datetime.now() + datetime.timedelta(days=1)).strftime('%Y-%m-%dT%H:%M')
             }
             ),
             'donated_amount': forms.NumberInput(
             attrs={
             'class': 'w-full px-4 py-3 rounded border border-gray-200 focus:border-red-500 focus:ring focus:ring-red-200 transition duration-300',
             'placeholder': 'Enter amount donated',
-            'step': '10'
+            'step': '10',
+            'max': '500'
             }
             ),
             'blood_bank': forms.Select(
@@ -158,13 +160,15 @@ class DonationRequestCreationForm(forms.ModelForm):
                         }),
                         'request_datetime': forms.DateTimeInput(attrs={
                             'type': 'datetime-local',
-                            'class': 'w-full px-4 py-3 rounded border border-gray-200 focus:border-red-500 focus:ring focus:ring-red-200 transition duration-300'
+                            'class': 'w-full px-4 py-3 rounded border border-gray-200 focus:border-red-500 focus:ring focus:ring-red-200 transition duration-300',
+                            'min': (datetime.datetime.now()).strftime('%Y-%m-%dT%H:%M')
+                        
                         })
                     }
 
                 def __init__(self, *args, **kwargs):
                     super().__init__(*args, **kwargs)
-                    self.fields['requested_amount'].label = "Amount Needed (units)"
+                    self.fields['requested_amount'].label = "Amount Needed (ml)"
                     self.fields['blood_group'].widget.attrs.update({
                         'class': 'w-full px-4 py-3 rounded border border-gray-200 focus:border-red-500 focus:ring focus:ring-red-200 transition duration-300'
                     })

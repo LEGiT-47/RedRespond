@@ -97,9 +97,18 @@ class Donation(models.Model):
         current_time = now()
         if self.status == 'pending' and self.scheduled_datetime < current_time:
             self.status = 'donated'
+            self.donor.user.blood_bank.a0 += self.donated_amount if self.donor.blood_group == 'A-' else 0
+            self.donor.user.blood_bank.a1 += self.donated_amount if self.donor.blood_group == 'A+' else 0
+            self.donor.user.blood_bank.b0 += self.donated_amount if self.donor.blood_group == 'B-' else 0
+            self.donor.user.blood_bank.b1 += self.donated_amount if self.donor.blood_group == 'B+' else 0
+            self.donor.user.blood_bank.ab0 += self.donated_amount if self.donor.blood_group == 'AB-' else 0
+            self.donor.user.blood_bank.ab1 += self.donated_amount if self.donor.blood_group == 'AB+' else 0
+            self.donor.user.blood_bank.o0 += self.donated_amount if self.donor.blood_group == 'O-' else 0
+            self.donor.user.blood_bank.o1 += self.donated_amount if self.donor.blood_group == 'O+' else 0
+            self.donor.user.blood_bank.save()
         elif self.status == 'not_confirmed' and self.scheduled_datetime < current_time:
             self.status = 'not_accepted'
-            self.not_accepted_reason = "The scheduled time has passed without confirmation."
+            self.not_accepted_reason = "Sorry !! The scheduled time has passed without confirmation."
         self.save()
     
 class DonationRequest(models.Model):

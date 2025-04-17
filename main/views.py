@@ -238,7 +238,7 @@ def blood_bank_home(request):
                 }
             
             message = f'''A donation request for {donation_request.blood_group} has been made by {donation_request.blood_bank} Hospital.
-               The {donation_request.blood_bank} Hospital needs {donation_request.requested_amount} units of {donation_request.blood_group} blood.
+               The {donation_request.blood_bank} Hospital needs {donation_request.requested_amount} ml of {donation_request.blood_group} blood.
                Its Phone number is {donation_request.blood_bank.user.phone_number} and its address is {donation_request.blood_bank.user.address}.
                Please respond if you can donate.'''
             # Send Telegram messages to all matching users
@@ -619,7 +619,24 @@ def blood_bank_profile(request, bank_id):
     }
     return render(request, 'main/blood_bank_profile1111.html', context)
 
-
+def update_max_capacity(request):
+    if request.method == 'POST':
+        max_capacity = request.POST.get('max_capacity')
+        blood_bank = get_object_or_404(BloodBank, user=request.user)
+        max_cap=max(blood_bank.a0,blood_bank.a1,blood_bank.b0,blood_bank.b1,blood_bank.ab0,blood_bank.ab1,blood_bank.o0,blood_bank.o1)
+        if int(max_capacity) < max_cap:
+            messages.error(request, 'Max capacity cannot be less than current stock!')
+            return redirect('blood_bank_home')
+        blood_bank.max_capacity_per_group = int(max_capacity)
+        try:
+          blood_bank.save()
+          messages.success(request, 'Max capacity updated successfully!')
+          return redirect('blood_bank_home')
+        except Exception as e:
+          print(e)
+          messages.error(request, f'Error updating max capacity: {str(e)}')
+          return redirect('blood_bank_home')
+    return redirect('blood_bank_home')
 
 
 
