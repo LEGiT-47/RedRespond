@@ -20,6 +20,7 @@
       :before {
         border: 8 solid #e5e7eb;
         box-sizing: border-box;
+        
       }
       :after,
       :before {
@@ -557,7 +558,7 @@
         line-height: 41.4px;
       }
       #webcrumbs .text-lg {
-        font-size: 18px;
+        font-size: 25px;
         line-height: 27px;
       }
       #webcrumbs .text-sm {
@@ -669,7 +670,6 @@
 
       body {
         line-height: inherit;
-        padding: 24px;
         display: flex;
         flex-direction: column;
         min-width: 100vw;
@@ -678,32 +678,182 @@
         justify-content: center;
         background: linear-gradient(135deg, #ffffff, #d4d4d4);
       }
+      /* Positioning and Layout */
+.sticky {
+  position: sticky;
+}
+.top-0 {
+  top: 0;
+}
+.z-50 {
+  z-index: 50;
+}
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin-right: auto;
+  margin-left: auto;
+}
+.mx-auto {
+  margin-right: auto;
+  margin-left: auto;
+}
+.px-6 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+.py-4 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+.flex {
+  display: flex;
+}
+.items-center {
+  align-items: center;
+}
+.justify-between {
+  justify-content: space-between;
+}
+
+/* Spacing and Sizing */
+.space-x-2 > * + * {
+  margin-left: 0.5rem;
+}
+.space-x-8 > * + * {
+  margin-left: 2rem;
+}
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+/* Typography */
+.text-red-600 {
+  color: #dc2626;
+}
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+.font-bold {
+  font-weight: 700;
+}
+.text-white {
+  color: #ffffff;
+}
+
+/* Animations and Effects */
+.hover\:scale-105:hover {
+  transform: scale(1.05);
+}
+.animate-pulse {
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+.transition-transform {
+  transition-property: transform;
+}
+.duration-300 {
+  transition-duration: 300ms;
+}
+.transition-colors {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+}
+
+/* Background and Borders */
+.bg-white {
+  background-color: #ffffff;
+}
+.shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.border-b-2 {
+  border-bottom-width: 2px;
+}
+.border-transparent {
+  border-color: transparent;
+}
+.hover\:border-red-600:hover {
+  border-color: #dc2626;
+}
+.bg-red-600 {
+  background-color: #dc2626;
+}
+
+/* Hover and Active States */
+.hover\:text-red-600:hover {
+  color: #dc2626;
+}
+.hover\:bg-red-700:hover {
+  background-color: #b91c1c;
+}
+.hover\:shadow-xl:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Buttons */
+.rounded-full {
+  border-radius: 9999px;
+}
+.transform {
+  transform: none;
+}
+.transition-all {
+  transition-property: all;
+}
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
     </style>
   </head>
   <body>
-    <div id="webcrumbs">
+    <div id="webcrumbs" style="width: 100%; height: 100%;">
       <div class="flex flex-col min-h-screen bg-gray-50">
+        <nav class="bg-white shadow-md sticky top-0 z-50" style="border-radius:30px; margin-left: 30px; margin-right: 30px; "> 
+          <div class="container mx-auto px-6 py-4 flex items-center justify-between"> 
+            <div class="flex items-center space-x-2 hover:scale-105 transition-transform duration-300"> 
+              <span class="material-symbols-outlined text-red-600 text-3xl animate-pulse">emergency</span>
+               <h1 class="text-2xl font-bold text-red-600">RedRespond</h1> </div> <div class="flex items-center space-x-8"> 
+                <a href="#" class="hover:text-red-600 transition-colors duration-300 border-b-2 border-transparent hover:border-red-600">Home</a> 
+                <a href="#" class="hover:text-red-600 transition-colors duration-300 border-b-2 border-transparent hover:border-red-600">Hospitals</a> 
+                <a href="#" class="hover:text-red-600 transition-colors duration-300 border-b-2 border-transparent hover:border-red-600">Blood Banks</a> 
+                <a href="{% url 'login' %}" class="hover:text-red-600 transition-colors duration-300 border-b-2 border-transparent hover:border-red-600">
+                    <button class="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                        Become a Donor
+                    </button>
+                </a>
+              </div> 
+            </div> 
+          </nav> 
         <main class="flex-grow flex items-center justify-center p-6">
-          <div class="w-full max-w-md">
-            <div class="bg-white rounded-2xl shadow-xl p-8 space-y-8">
+          <div class="w-full">
+            <div class="bg-white rounded-2xl shadow-xl p-8 space-y-8" style="display: flex; flex-direction: row; align-items: center; justify-content: space-around;">
               <div class="text-center">
                 <img
                   src="/static/log1.png"
                   alt="Blood Donation"
                   class="w-48 h-48 mx-auto mb-6 animate-pulse"
+                  style="min-height: 500px; min-width: 500px;"
                 />
-                <h1 class="text-3xl font-bold text-gray-800">
+                <h1 class="text-3xl  " style="font-family:cursive; font-size: 50px;  color: red">
                   Blood Donation System
                 </h1>
-                <p class="text-gray-500 mt-2">Login to your account</p>
               </div>
+              <div>
+                <p class="logindd " style="padding-bottom:70px; text-align:center; font-family:cursive ;font-size:40px">Login to your account</p>
+              
               <form method="post">
                 {% csrf_token %}
             
                 <!-- Form Fields -->
                 <div class="mb-4 flex justify-center">
-                    <label for="username" class="block text-lg">Username : </label>
-                    <hr>
+                    <label for="username" class="block text-lg " style="font-family: monospace;">Username : </label>
+                    &nbsp;
                     <p>
                      {{ form.username }} <!-- Render the username field --></p>
                     <!-- Optional: You can add custom error handling here -->
@@ -717,8 +867,8 @@
                 </div>
                 <br>
                 <div class="mb-4 flex justify-center">
-                    <label for="password" class="block text-lg">Password : </label>
-                    <hr><hr><hr>
+                    <label for="password" class="block text-lg" style="font-family: monospace;">Password : </label>
+                   &nbsp;
                      {{ form.password }} <!-- Render the password field -->
                     {% if form.password.errors %}
                         <div class="text-red-500 text-sm">
@@ -732,7 +882,7 @@
             
                 <!-- Submit Button -->
                 <div class="flex justify-center">
-                    <button type="submit" class="p-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+                    <button type="submit" class="p-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors" style="font-family: monospace;">
                         Login
                     </button>
                 </div>
@@ -740,10 +890,10 @@
             
                 <!-- Optional: Add "Forgot Password?" link -->
                 <div class="text-center mt-4">
-                    <a href="#" class="text-blue-500 hover:text-blue-600">Forgot your password?</a>
+                    <a href="#" class="text-blue-500 hover:text-blue-600" style="font-family: monospace;">Forgot your password?</a>
                 </div>
                 <br>
-                <div class="text-center mt-4">
+                <div class="text-center mt-4" style="font-family: monospace; padding-bottom: 20px;"> 
                     -------------OR-------------
                     
                 </div>
@@ -751,7 +901,7 @@
             </form>
             
                 <div class="text-center mt-4">
-                    <a href="/register/"><button type="submit" class="p-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+                    <a href="/register/"><button type="submit" class="p-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors" style="font-family: monospace;">
                         Register
                     </button></a>
                 </div>
@@ -760,7 +910,7 @@
                   <div class="w-full border-t"></div>
                 </div>
                 <div class="relative flex justify-center text-sm">
-                  <span class="px-2 bg-white text-gray-500"
+                  <span class="px-2 bg-white text-gray-500" style="font-family: monospace; padding-top: 10px ;padding-bottom: 10px"
                     >or continue with</span
                   >
                 </div>
@@ -784,9 +934,11 @@
               </div>
               <div class="animate-bounce flex justify-center">
                 <span class="material-symbols-outlined text-red-500 text-4xl"
+                style="padding-top: 20px"
                   >water_drop</span
                 >
               </div>
+            </div>
             </div>
           </div>
         </main>
