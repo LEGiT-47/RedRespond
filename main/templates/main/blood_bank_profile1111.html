@@ -3,8 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <title>My Webcrumbs Plugin</title>
     <style>
+      
       @import url(https://fonts.googleapis.com/css2?family=Lato&display=swap);
       @import url(https://fonts.googleapis.com/css2?family=Open+Sans&display=swap);
       @import url(https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200);
@@ -1060,6 +1062,10 @@
         --tw-border-opacity: 1;
         border-color: rgb(255 20 24 / var(--tw-border-opacity));
       }
+      #map {
+        height: 250px; /* Adjust the height */
+        width: 100%; /* Adjust the width */
+    }
     </style>
   </head>
 
@@ -1297,24 +1303,44 @@
                     Sunday: Closed
                   </p>
                 </div>
-                <div class="flex gap-3 mt-6" style="gap:10px">
-                  <button
-                    class="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-primary-700 transition-all duration-300 flex items-center justify-center"
-                    style="border-radius:24px; padding-top: 8px; padding-bottom: 8px;min-height:75px; max-width:160px"
-                    >
-                    <span class="material-symbols-outlined mr-2"
-                    style="font-weight:600"
-                      >directions</span
-                    >
-                    Get Directions
-                  </button>
-                  <button
-                    class="flex-1 bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-all duration-300 flex items-center justify-center"
-                  >
-                    <span class="material-symbols-outlined mr-2">phone</span>
-                    Call Now
-                  </button>
-                </div>
+                
+                <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Set up the map
+        lat={{blood_bank.user.loc_latitude}};
+        lon={{blood_bank.user.loc_longitude}};
+        const map = L.map('map').setView([lat, lon], 14); // Example: New York City
+        
+
+        // Add the OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        // Add a marker
+        L.marker([lat, lon]).addTo(map)
+            .bindPopup('This is {{blood_bank.organization_name|upper}} .')
+            .openPopup();
+        
+    </script>
+      <button
+        class="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-primary-700 transition-all duration-300 flex items-center justify-center"
+        style="border-radius:24px; margin-top: 12px; padding-bottom: 8px;min-height:40px;width:100%;"
+        >
+        <span class="material-symbols-outlined mr-2"
+        style="font-weight:600"
+          >directions</span
+        >
+        <a href="https://www.google.com/maps/dir/?api=1&destination={{blood_bank.user.loc_latitude}},{{blood_bank.user.loc_longitude}}"
+          class="text-white"
+          target="_blank"
+          >
+        Get Directions
+        </a>
+      </button>
+      
               </div>
           </div>
           <div class="bg-white rounded-xl p-8 shadow-md" style="padding:32px; border-radius:24px">
