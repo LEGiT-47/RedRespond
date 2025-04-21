@@ -672,6 +672,10 @@
                                 >
                                 {{ donation.get_status_display }}
                                 </p>
+                                {% if not_accepted %}
+                                    <p class="text-sm text-gray-500">Reason for Rejection</p>
+                                    <p class="font-medium">{{ donation.not_accepted_reason }}</p>
+                                {% endif %}
                             </div>
                             <div>
                                 <p class="text-sm text-gray-500">Request Date &amp; Time</p>

@@ -40,6 +40,8 @@ def register(request):
                 )
                 b1.user.loc_latitude = latitude
                 b1.user.loc_longitude = longitude
+                b1.user.save()
+                b1.save()
                 login(request, user)
                 return redirect('blood_bank_home')  # Redirect blood bank users to their home
             elif user.user_type == 'normal':
@@ -50,6 +52,8 @@ def register(request):
                 )
                 b1.user.loc_latitude = latitude
                 b1.user.loc_longitude = longitude
+                b1.user.save()
+                b1.save()
                 login(request, user)
                 return redirect('normal_home')  # Redirect normal users to their home
     else:
@@ -166,6 +170,8 @@ def past_donations_view(request):
 @login_required
 def blood_donation_page(request,id):
     donation = get_object_or_404(Donation, id=id)
+    if donation.status == 'not_accepted':
+        return render(request, 'main/blood_donation_page.html', {'donation': donation, 'not_accepted': True})
     return render(request, 'main/blood_donation_page.html', {'donation': donation})
 
 
@@ -183,6 +189,7 @@ def blood_bank_home(request):
 
     donation_requests = Donation.objects.filter(blood_bank=blood_bank, status='not_confirmed')
     upcoming_donations=Donation.objects.filter(blood_bank=blood_bank, status='pending')
+    not_accepted=Donation.objects.filter(blood_bank=blood_bank, status='not_accepted')
     for donation in upcoming_donations:
         donation.donor_blood_group = NormalUser.objects.get(user=donation.donor).blood_group
     count_pending = donation_requests.count()
@@ -270,11 +277,13 @@ def blood_bank_home(request):
     return render(request, 'main/blood_bank_dashboard.html', {
         'donation_requests': donation_requests,
         'upcoming_donations': upcoming_donations,
+        'not_accepted': not_accepted,
         'form': form,
         'user_requests': user_requests,
         'percentage_all': percentage_all,
         'donations_count':donations_count,
         'blood_bank': blood_bank,
+        'donation_requestsss': DonationRequest.objects.filter(blood_bank=blood_bank),
     })
 
 @login_required
@@ -541,6 +550,7 @@ from django.shortcuts import render
 import json
 
 def bbsearch(request):
+    user111 = get_object_or_404(NormalUser, user=request.user)
     if request.method == "POST":
         try:
             data = json.loads(request.body)  # Parse JSON data from the request
@@ -574,13 +584,13 @@ def bbsearch(request):
             sorted_blood_banks = sorted(blood_banks_data, key=lambda x: x["distance"])
 
             # Pass the sorted data to the template
-            return render(request, "main/bloodbank_search.html", {'all_requests': sorted_blood_banks})
+            return render(request, "main/bloodbank_search.html", {'all_requests': sorted_blood_banks, 'user111': user111})
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
 
     # Render default template for GET requests
-    return render(request, "main/bloodbank_search.html", {'all_requests': BloodBank.objects.all()})
+    return render(request, "main/bloodbank_search.html", {'all_requests': BloodBank.objects.all(), 'user111': user111})
 
 from decimal import Decimal
 
@@ -638,6 +648,30 @@ def update_max_capacity(request):
           return redirect('blood_bank_home')
     return redirect('blood_bank_home')
 
+@login_required
+def view_profile(request):
+    if request.user.user_type == 'normal':
+        user111 = get_object_or_404(NormalUser, user=request.user)
+        home='normal'
+    else:
+        user111 = get_object_or_404(BloodBank, user=request.user)
+        home='blood_bank'
 
+    if request.method == 'POST':
+        # Handle profile update logic here
+        # For example, you can update the user's phone number or address
+        user111.user.username = request.POST.get('username', user111.user.username)
+        user111.user.email = request.POST.get('email', user111.user.email)
+        user111.user.phone_number = request.POST.get('phone_number', user111.user.phone_number)
+        user111.user.address = request.POST.get('address', user111.user.address)
+        user111.user.city = request.POST.get('city', user111.user.city)
+        user111.user.state = request.POST.get('state', user111.user.state)
+        user111.user.pincode = request.POST.get('pincode', user111.user.pincode)
+        user111.user.loc_latitude = request.POST.get('latitude', user111.user.loc_latitude)
+        user111.user.loc_longitude = request.POST.get('longitude', user111.user.loc_longitude)
+        user111.user.save()
+        messages.success(request, 'Profile updated successfully!')
+        return redirect('view_profile')
+    return render(request, 'main/profile_page.html', {'user111': user111,'home':home})
 
     

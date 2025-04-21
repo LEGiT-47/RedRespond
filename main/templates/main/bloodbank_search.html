@@ -5,57 +5,63 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>My Webcrumbs Plugin</title>
-        <link rel="stylesheet" href="{% static 'bloodbank_search.css' %}" />
+        
+    <link
+      rel="stylesheet"
+      href="{% static 'normal_home.css' %}">
+      <link rel="stylesheet" href="{% static 'bloodbank_search.css' %}" />
+  </head>
     </head>
-    <body>
+    <body onload="updateTime()">
         <div id="webcrumbs">
             <div class="w-[1280px] mx-auto font-sans">
-                <nav class="bg-red-600 text-white p-4 shadow-lg">
-                    <div class="flex justify-between items-center">
+                <header class="bg-white shadow-lg p-4" style="border-radius: 30px;">
+                    <nav class="container mx-auto flex justify-between items-center" >
+                      <div class="flex items-center space-x-2 hover:scale-105 transition-transform duration-300"> 
+                        <span class="material-symbols-outlined text-red-600 text-3xl animate-pulse">bloodtype</span>
+                         <h1 class="text-2xl font-bold text-red-600">RedRespond</h1> </div> 
+                      <div class="flex items-center space-x-6">
                         <div class="flex items-center space-x-2">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-8 w-8"
-                                viewBox="0 0 24 24"
-                                fill="currentColor"
-                            >
-                                <path
-                                    d="M12 2c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10-4.48-10-10-10zm-1 15h-2v-6h2v6zm4 0h-2v-6h2v6zm-2-8c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"
-                                ></path>
-                            </svg>
-                            <h1 class="text-2xl font-bold">RedRespond</h1>
+                          <span class="material-symbols-outlined text-red-500"
+                            >schedule</span>
+                          <span class="text-sm"><span id="time"></span> <span id="date"></span></span>
                         </div>
-                        <div class="hidden md:flex space-x-6">
-                            <a
-                                href="https://webcrumbs.cloud/placeholder"
-                                class="hover:underline transition duration-300 font-medium"
-                                >Home</a
-                            >
-                            <a
-                                href="https://webcrumbs.cloud/placeholder"
-                                class="hover:underline transition duration-300 font-medium"
-                                >Blood Banks</a
-                            >
-                            <a
-                                href="https://webcrumbs.cloud/placeholder"
-                                class="hover:underline transition duration-300 font-medium"
-                                >Donate</a
-                            >
-                            <a
-                                href="https://webcrumbs.cloud/placeholder"
-                                class="hover:underline transition duration-300 font-medium"
-                                >About Us</a
-                            >
-                            <a
-                                href="https://webcrumbs.cloud/placeholder"
-                                class="hover:underline transition duration-300 font-medium"
-                                >Contact</a
-                            >
+                        <div class="flex items-center space-x-2">
+                          <span class="material-symbols-outlined text-red-500"
+                            >person</span
+                          >
+                          <span>&nbsp;Hello, {{request.user.username}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                          <span
+                            class="bg-red-100 text-red-600 px-2 py-1 rounded-full text-sm"
+                            >{{user111.blood_group}}</span
+                          >
                         </div>
                         
-                    </div>
-                </nav>
-                <div class="p-6 bg-gray-50">
+                          <a href="{% url 'normal_home' %}">
+                            <button
+                              class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105 flex items-center space-x-2"
+                            >
+                              <span class="material-symbols-outlined mr-2">home</span>
+                                Home
+                            </button></a>
+                          <a href="{% url 'view_profile' %}">
+                            <button
+                              class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105 flex items-center space-x-2"
+                            >
+                              <span class="material-symbols-outlined mr-2">person</span>
+                              Profile
+                            </button></a>
+                        <a href="{% url 'logout' %}">
+                        <button
+                          class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105 flex items-center space-x-2"
+                        >
+                          <span class="material-symbols-outlined mr-2">logout</span>
+                          Logout
+                        </button></a>
+                      </div>
+                    </nav>
+                  </header>
+                <div class="p-6 bg-gray-49" style=" border-radius: 30px; margin-top: 20px;">
                     <div class="mb-8">
                         <h2 class="text-3xl font-bold text-gray-800 mb-2">Find Blood Banks Near You</h2>
                         <p class="text-gray-600">
@@ -166,22 +172,7 @@
                             </div>
                         </details>
                     </div>
-                    <div class="mb-4 flex justify-between items-center">
-                        <p class="text-gray-700 font-medium">Showing 12 results</p>
-                        <div class="flex items-center">
-                            <span class="text-gray-700 mr-2">View:</span>
-                            <button
-                                class="p-2 bg-red-600 text-white rounded-l-lg hover:bg-red-700 transition duration-300"
-                            >
-                                <span class="material-symbols-outlined">grid_view</span>
-                            </button>
-                            <button
-                                class="p-2 bg-gray-200 text-gray-700 rounded-r-lg hover:bg-gray-300 transition duration-300"
-                            >
-                                <span class="material-symbols-outlined">view_list</span>
-                            </button>
-                        </div>
-                    </div>
+                    
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {% for bloodbank in all_requests %}
                         <div
@@ -251,38 +242,7 @@
                         {% endfor %}
                     </div>
                     <div class="mt-8 flex justify-center">
-                        <nav class="flex items-center space-x-2">
-                            <button
-                                class="px-3 py-2 border border-gray-300 rounded-lg text-red-600 hover:bg-red-50 transition duration-300"
-                            >
-                                <span class="material-symbols-outlined">chevron_left</span>
-                            </button>
-                            <button
-                                class="px-4 py-2 border border-gray-300 rounded-lg bg-red-600 text-white hover:bg-red-700 transition duration-300"
-                            >
-                                1
-                            </button>
-                            <button
-                                class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-red-50 transition duration-300"
-                            >
-                                2
-                            </button>
-                            <button
-                                class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-red-50 transition duration-300"
-                            >
-                                3
-                            </button>
-                            <button
-                                class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-red-50 transition duration-300"
-                            >
-                                4
-                            </button>
-                            <button
-                                class="px-3 py-2 border border-gray-300 rounded-lg text-red-600 hover:bg-red-50 transition duration-300"
-                            >
-                                <span class="material-symbols-outlined">chevron_right</span>
-                            </button>
-                        </nav>
+                       
                     </div>
                 </div>
                 <footer class="bg-red-600 text-white mt-8">
@@ -402,6 +362,31 @@
                 return cookieValue;
             }
             </script>
+            <script>
+                function updateTime() {
+                    const now = new Date();
+                    
+                    // Get the current time
+                    const hours = now.getHours().toString().padStart(2, '0');
+                    const minutes = now.getMinutes().toString().padStart(2, '0');
+                    const seconds = now.getSeconds().toString().padStart(2, '0');
+                    const formattedTime = hours + ':' + minutes + ':' + seconds+ "  ,   ";
             
+                    // Get the current date
+                    const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                    const monthsOfYear = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
+                    const dayOfWeek = daysOfWeek[now.getDay()];
+                    const month = monthsOfYear[now.getMonth()];
+                    const day = now.getDate().toString().padStart(2, '0');
+                    const year = now.getFullYear();
+                    const formattedDate = `    ${dayOfWeek} ,  ${month}  ${day} ,  ${year} `;
+            
+                    // Update both date and time on the page
+                    document.getElementById('time').textContent = formattedTime;
+                    document.getElementById('date').textContent = formattedDate;
+                }
+            
+                setInterval(updateTime, 1000); // Update every second
+            </script>
     </body>
 </html>

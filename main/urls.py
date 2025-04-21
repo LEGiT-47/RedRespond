@@ -25,4 +25,5 @@ urlpatterns = [
     path('bdash/<int:bank_id>/',views.blood_bank_profile,name='blood_bank_dashboard'),
     path('connect_telegram/', views.connect_telegram, name='connect_telegram'),
     path('update_capacity',views.update_max_capacity,name='update_max_capacity'),
+    path('profile/', views.view_profile, name='view_profile'),
 ]

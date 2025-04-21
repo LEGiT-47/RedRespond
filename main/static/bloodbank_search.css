@@ -548,9 +548,9 @@ video {
     --tw-bg-opacity: 1;
     background-color: rgb(229 231 235 / var(--tw-bg-opacity));
 }
-#webcrumbs .bg-gray-50 {
+#webcrumbs .bg-gray-49 {
     --tw-bg-opacity: 1;
-    background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+    background-color: white
 }
 #webcrumbs .bg-green-100 {
     --tw-bg-opacity: 1;
