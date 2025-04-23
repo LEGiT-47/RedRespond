@@ -1072,7 +1072,7 @@
                 <span class="material-symbols-outlined text-red-500"
                   >local_hospital</span
                 >
-                <span>{{blood_bank.organization_name}} Bank</span>
+                <span>{{blood_bank.organization_name}} </span>
               </div>
               <a href="{% url 'view_profile' %}">
                 <button
@@ -1620,25 +1620,21 @@
               </div>
               {% if donation_requests %}
                   {% for donation in donation_requests %}
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead>
-                  <tr>
-                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Donor</th>
-                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200" >
-                  
-                  <tr class="hover:bg-gray-50 transition-colors duration-200">
-                    <td class="px-3 py-4 whitespace-nowrap">
-                      <div class="text-sm font-medium text-gray-900"><a href="{% url 'donation_detail' donation.id %}">{{ donation.donor.username }}</div>
-                  </td>
-                  <td class="px-3 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-900">{{ donation.donated_amount }} units</div>
-                  </td>
-                  </tr>
-                </tbody>
-              </table>
+                  <div class="flex items-center p-3 border border-gray-100 rounded-md hover:bg-gray-50 transition-colors duration-200"
+                onclick="window.location.href='{% url 'donation_detail' donation.id %}'">
+                  <div class="bg-red-100 rounded-full p-3 mr-4">
+                    <span class="material-symbols-outlined text-red-600">person</span>
+                </div>
+                <div class="flex-1">
+                    <h4 class="font-medium">{{ donation.donor.username }}</h4>
+                    <p class="text-sm text-gray-500">Type {{ donation.donor_blood_group }} </p>
+                    {% comment %} {% if donation.donor.last_donation_date %}Regular donor{% else %}First time donor{% endif %} {% endcomment %}
+                </div>
+                <div class="text-right">
+                    <p class="font-medium text-gray-800">{{ donation.scheduled_datetime|date:"M d, Y" }}</p>
+                </div>
+                </div>
+              
               {% endfor %}
                   {% else %}
                   <div class="px-3 py-4 text-center text-sm text-gray-500">No recent donations</div>

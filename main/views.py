@@ -99,16 +99,19 @@ def normal_home(request):
     already = Donation.objects.filter(donor=request.user,  status='donated')
     notconfirm= Donation.objects.filter(donor=request.user,status='not_confirmed')
     pending= Donation.objects.filter(donor=request.user, scheduled_datetime__gt=timezone.now(),status='pending')
+    latest_donation = Donation.objects.filter(donor=request.user, status__in=['donated', 'pending','not_confirmed']).order_by('-scheduled_datetime').first()
+    eligible = "True" if not latest_donation or (timezone.now() - latest_donation.scheduled_datetime).days >= 90 else "False"
+    eligible_time = 90 - (timezone.now() - latest_donation.scheduled_datetime).days if latest_donation else None
     if request.method == "POST":
         form = DonationRequestForm(request.POST)
-        if form.is_valid():
+        if form.is_valid() and eligible == "True":
             donation = form.save(commit=False)
             donation.donor = request.user  # Automatically set donor from logged-in user
             donation.save()
             return redirect('donation_request_success')
     else:
           form = DonationRequestForm()
-    return render(request, 'main/normal_home.html', {'form': form,'blood_groupiee':blood_groupiee,'already':already,'notconfirm':notconfirm,'pending':pending})
+    return render(request, 'main/normal_home.html', {'form': form,'blood_groupiee':blood_groupiee,'already':already,'notconfirm':notconfirm,'pending':pending,'eligible':eligible,'eligible_time':eligible_time})
 
 def logout_view(request):
     logout(request)
@@ -190,6 +193,10 @@ def blood_bank_home(request):
     donation_requests = Donation.objects.filter(blood_bank=blood_bank, status='not_confirmed')
     upcoming_donations=Donation.objects.filter(blood_bank=blood_bank, status='pending')
     not_accepted=Donation.objects.filter(blood_bank=blood_bank, status='not_accepted')
+    for donation in donation_requests:
+        donation.donor_blood_group = NormalUser.objects.get(user=donation.donor).blood_group
+    for donation in not_accepted:
+        donation.donor_blood_group = NormalUser.objects.get(user=donation.donor).blood_group
     for donation in upcoming_donations:
         donation.donor_blood_group = NormalUser.objects.get(user=donation.donor).blood_group
     count_pending = donation_requests.count()
@@ -319,6 +326,11 @@ def donation_request_summary(request, request_id):
 def donation_detail(request, id):
     # Retrieve all donations made by the donor
     donations = get_object_or_404(Donation, id=id)
+    donations.donor_blood_group = NormalUser.objects.get(user=donations.donor).blood_group
+    try:
+        blood_bank = request.user.blood_bank
+    except Exception:
+        return redirect('home')  # Redirect if user is not a blood bank
 
     if request.method == "POST":
         print(1)
@@ -329,7 +341,7 @@ def donation_detail(request, id):
     else:
         form = DonationConfirmationForm()
 
-    return render(request, 'donations/donation_detail.html', {'donations': donations,'form': form})
+    return render(request, 'donations/donation_detail.html', {'donations': donations,'form': form,'blood_bank':blood_bank})
 
 TELEGRAM_BOT_TOKEN = ''
 

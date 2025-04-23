@@ -162,11 +162,24 @@
                   <li>If Prior Donation , then donate after 3 months only</li>
                 </ul>
               </div>
+              {% if eligible == "True"%}
               <button
                 class="w-full py-3 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-xl font-medium hover:shadow-lg hover:scale-[1.02] transition-all duration-300"
               >
                 Schedule Donation
               </button>
+              {% else %}
+              <div
+                class="w-full py-3 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-xl font-medium hover:shadow-lg hover:scale-[1.02] transition-all duration-300 items-center space-x-2"
+                style="text-align: center;"
+              >
+              <span class="material-symbols-outlined  select-none animate-pulse" style="font-variation-settings: 'FILL' 1; user-select: none; -webkit-user-select: none;" 
+              >error</span>
+              Not eligible for donation <br>
+              Can do Donation after {{ eligible_time }} days only.
+            </div>
+              {% endif %}
+              
             </form>
              
             </div> 
