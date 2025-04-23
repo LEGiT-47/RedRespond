@@ -1,9 +1,13 @@
+{% load static%}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RedRespond</title>
+    <link
+      rel="stylesheet"
+      href="{% static 'blood_request.css' %}">
     <style>
       @import url(https://fonts.googleapis.com/css2?family=Lato&display=swap);
       
@@ -856,6 +860,7 @@
     }
       
     </style>
+    
   </head>
   <body>
     <div id="webcrumbs">
@@ -865,9 +870,8 @@
             <div class="flex items-center space-x-2 hover:scale-105 transition-transform duration-300"> 
               <span class="material-symbols-outlined text-red-600 text-3xl animate-pulse">bloodtype</span>
                <h1 class="text-2xl font-bold text-red-600">RedRespond</h1> </div> <div class="flex items-center space-x-8"> 
-                <a href="#" class="hover:text-red-600 transition-colors duration-300 border-b-2 border-transparent hover:border-red-600">Home</a> 
-                <a href="#" class="hover:text-red-600 transition-colors duration-300 border-b-2 border-transparent hover:border-red-600">Hospitals</a> 
-                <a href="#" class="hover:text-red-600 transition-colors duration-300 border-b-2 border-transparent hover:border-red-600">Blood Banks</a> 
+                <a href="{% url 'home' %}" class="hover:text-red-600 transition-colors duration-300 border-b-2 border-transparent hover:border-red-600">Home</a> 
+                
                 <a href="{% url 'login' %}" class="hover:text-red-600 transition-colors duration-300 border-b-2 border-transparent hover:border-red-600">
                     <button class="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
                         Become a Donor
@@ -882,8 +886,8 @@
                 <h2 class="text-5xl font-bold leading-tight bg-gradient-to-r from-red-600 to-red-800 bg-clip-text text-transparent">Emergency Blood Response Platform</h2> 
                 <p class="text-lg leading-relaxed">Connecting hospitals, blood banks, and donors in real-time for emergency situations. Every minute counts when saving lives.</p> 
                 <div class="flex space-x-4"> 
-                  <button class="bg-red-600 text-white px-8 py-3 rounded-full hover:bg-red-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">Register Hospital</button> 
-                  <button class="border-2 border-red-600 px-8 py-3 rounded-full hover:bg-red-50 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">Emergency Request</button> 
+                    <button onclick="window.location.href='{% url 'login' %}'" class="bg-red-600 text-white px-8 py-3 rounded-full hover:bg-red-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">Register Hospital</button> 
+                  <button onclick="window.location.href='{% url 'login' %}'" class="border-2 border-red-600 px-8 py-3 rounded-full hover:bg-red-50 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">Emergency Request</button> 
                 </div> 
               </div> 
               <div class="relative group"> 
@@ -942,64 +946,96 @@
                   </div> 
                 </div> 
               </section> 
-              <footer class="bg-gray-900 text-gray-300"> <div class="container mx-auto px-6 py-12"> <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8"> 
-                <div class="space-y-4"> <div class="flex items-center space-x-2"> 
-                  <span class="material-symbols-outlined text-red-500">emergency</span> 
-                  <h4 class="text-xl font-bold text-white">RedRespond</h4> 
-                </div> 
-                <p class="text-sm">Saving lives through immediate emergency response and coordination.</p> 
-                <div class="flex space-x-4"> 
-                  <span class="material-symbols-outlined hover:text-red-500 cursor-pointer transition-colors duration-300">facebook</span>
-                   <span class="material-symbols-outlined hover:text-red-500 cursor-pointer transition-colors duration-300">twitter</span>
-                    <span class="material-symbols-outlined hover:text-red-500 cursor-pointer transition-colors duration-300">linkedin</span> 
-                  </div> 
-                </div>
-                <div> 
-                  <h5 class="font-semibold text-white mb-4">Quick Links</h5>
-                   <ul class="space-y-2"> 
-                    <li>
-                      <a href="#" class="hover:text-red-500 transition-colors duration-300">About Us</a>
-                    </li>
-                     <li>
-                      <a href="#" class="hover:text-red-500 transition-colors duration-300">Services</a>
-                    </li>
-                    <li>
-                      <a href="#" class="hover:text-red-500 transition-colors duration-300">Contact</a>
-                    </li> 
-                    <li>
-                      <a href="#" class="hover:text-red-500 transition-colors duration-300">Blog</a>
-                    </li> 
-                  </ul> 
-                </div> 
-                <div> 
-                  <h5 class="font-semibold text-white mb-4">Resources</h5> 
-                  <ul class="space-y-2"> 
-                    <li>
-                      <a href="#" class="hover:text-red-500 transition-colors duration-300">FAQ</a>
-                    </li> 
-                    <li>
-                      <a href="#" class="hover:text-red-500 transition-colors duration-300">Privacy Policy</a>
-                    </li> 
-                    <li>
-                      <a href="#" class="hover:text-red-500 transition-colors duration-300">Terms of Service</a>
-                    </li>
-                     <li>
-                      <a href="#" class="hover:text-red-500 transition-colors duration-300">Support</a>
-                    </li> 
-                  </ul>
-                 </div>
-                  <div>
-                     <h5 class="font-semibold text-white mb-4">Newsletter</h5> 
-                     <div class="flex"> <input type="email" placeholder="Enter your email" class="bg-gray-800 px-4 py-2 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-red-500 w-full"/>
-                       <button class="bg-red-600 text-white px-4 py-2 rounded-r-lg hover:bg-red-700 transition-colors duration-300">Subscribe</button> 
-                      </div> 
-                    </div> 
-                  </div> 
-                  <div class="border-t border-gray-800 pt-8"> 
-                    <p class="text-center text-sm">© 2024 RedRespond. All rights reserved.</p> 
+              <footer class="mt-16 bg-black border-t" style="border-radius: 30px;">
+                <div class="max-w-7xl mx-auto px-6 py-12">
+                  <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div class="space-y-4">
+                      <h3
+                        class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-pink-600"
+                      >
+                        RedRespond
+                      </h3>
+                      <p class="text-gray-400">
+                        Connecting donors with those in need, one donation at a time.
+                      </p>
+                    </div>
+                    <div class="space-y-4">
+                      <h4 class="font-semibold text-white">Quick Links</h4>
+                      <ul class="space-y-2">
+                        <li>
+                          <a
+                            href="#"
+                            class="text-gray-400 hover:text-red-600 transition-colors duration-300"
+                            >About Us</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="#"
+                            class="text-gray-400 hover:text-red-600 transition-colors duration-300"
+                            >Contact</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="#"
+                            class="text-gray-400 hover:text-red-600 transition-colors duration-300"
+                            >FAQ</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="space-y-4">
+                      <h4 class="font-semibold text-white">Legal</h4>
+                      <ul class="space-y-2">
+                        <li>
+                          <a
+                            href="#"
+                            class="text-gray-400 hover:text-red-600 transition-colors duration-300"
+                            >Privacy Policy</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="#"
+                            class="text-gray-400 hover:text-red-600 transition-colors duration-300"
+                            >Terms of Service</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="#"
+                            class="text-gray-400 hover:text-red-600 transition-colors duration-300"
+                            >Cookie Policy</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="space-y-4">
+                      <h4 class="font-semibold text-white">Connect With Us</h4>
+                      <div class="flex space-x-4">
+                        <span
+                          class="material-symbols-outlined text-gray-400 cursor-pointer hover:text-red-600 transition-colors duration-300"
+                          >facebook</span
+                        >
+                        <span
+                          class="material-symbols-outlined text-gray-400 cursor-pointer hover:text-red-600 transition-colors duration-300"
+                          >mail</span
+                        >
+                        <span
+                          class="material-symbols-outlined text-gray-400 cursor-pointer hover:text-red-600 transition-colors duration-300"
+                          >phone_in_talk</span
+                        >
+                      </div>
+                    </div>
                   </div>
-                 </div> 
-                </footer> 
+                  <div
+                    class="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400"
+                  >
+                    <p>© 2024 RedRespond . All rights reserved.</p>
+                  </div>
+                </div>
+              </footer>
               </div>
             </div>
   </body>

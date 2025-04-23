@@ -1,3 +1,4 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -5,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <title>My Webcrumbs Plugin</title>
+    <link
+      rel="stylesheet"
+      href="{% static 'blood_request.css' %}">
     <style>
       
       @import url(https://fonts.googleapis.com/css2?family=Lato&display=swap);
@@ -1439,61 +1443,93 @@
             </div>
           </div>
         </main>
-        <footer class="bg-white shadow-inner py-8 px-6 mt-6">
-          <div class="max-w-full mx-auto">
-            <div class="grid grid-cols-4 gap-8">
-              <div>
-                <div class="flex items-center space-x-2 mb-4">
-                  <svg class="w-8 h-8 text-red-700" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12,4.5c1.93,0,3.5,1.57,3.5,3.5c0,1.39-0.81,2.59-1.98,3.15L14.5,14h-5l0.98-2.85 C9.31,10.59,8.5,9.39,8.5,8C8.5,6.07,10.07,4.5,12,4.5z M12,2c-3.31,0-6,2.69-6,6c0,2.97,2.17,5.43,5,5.91V21h2v-7.09 c2.83-0.48,5-2.94,5-5.91C18,4.69,15.31,2,12,2z"></path>
-                  </svg>
-                  <h3 class="text-lg font-bold text-red-700">RedRespond</h3>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Connecting blood donors with those in need since 2015. Our mission is to ensure no one goes without life-saving blood when they need it most.</p>
+        <footer class="mt-16 bg-black border-t" style="border-radius: 30px;">
+          <div class="max-w-7xl mx-auto px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+              <div class="space-y-4">
+                <h3
+                  class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-pink-600"
+                >
+                  RedRespond
+                </h3>
+                <p class="text-gray-400">
+                  Connecting donors with those in need, one donation at a time.
+                </p>
+              </div>
+              <div class="space-y-4">
+                <h4 class="font-semibold text-white">Quick Links</h4>
+                <ul class="space-y-2">
+                  <li>
+                    <a
+                      href="#"
+                      class="text-gray-400 hover:text-red-600 transition-colors duration-300"
+                      >About Us</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="text-gray-400 hover:text-red-600 transition-colors duration-300"
+                      >Contact</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="text-gray-400 hover:text-red-600 transition-colors duration-300"
+                      >FAQ</a
+                    >
+                  </li>
+                </ul>
+              </div>
+              <div class="space-y-4">
+                <h4 class="font-semibold text-white">Legal</h4>
+                <ul class="space-y-2">
+                  <li>
+                    <a
+                      href="#"
+                      class="text-gray-400 hover:text-red-600 transition-colors duration-300"
+                      >Privacy Policy</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="text-gray-400 hover:text-red-600 transition-colors duration-300"
+                      >Terms of Service</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="text-gray-400 hover:text-red-600 transition-colors duration-300"
+                      >Cookie Policy</a
+                    >
+                  </li>
+                </ul>
+              </div>
+              <div class="space-y-4">
+                <h4 class="font-semibold text-white">Connect With Us</h4>
                 <div class="flex space-x-4">
-                  <a href="#" class="text-gray-500 hover:text-red-600 transition-colors duration-200"><span class="material-symbols-outlined">facebook</span></a> <a href="#" class="text-gray-500 hover:text-red-600 transition-colors duration-200"><span class="material-symbols-outlined">twitter</span></a> <a href="#" class="text-gray-500 hover:text-red-600 transition-colors duration-200"><span class="material-symbols-outlined">instagram</span></a> <a href="#" class="text-gray-500 hover:text-red-600 transition-colors duration-200"><span class="material-symbols-outlined">linkedin</span></a>
+                  <span
+                    class="material-symbols-outlined text-gray-400 cursor-pointer hover:text-red-600 transition-colors duration-300"
+                    >facebook</span
+                  >
+                  <span
+                    class="material-symbols-outlined text-gray-400 cursor-pointer hover:text-red-600 transition-colors duration-300"
+                    >mail</span
+                  >
+                  <span
+                    class="material-symbols-outlined text-gray-400 cursor-pointer hover:text-red-600 transition-colors duration-300"
+                    >phone_in_talk</span
+                  >
                 </div>
               </div>
-              <div>
-                <h4 class="text-lg font-semibold text-gray-800 mb-4">Quick Links</h4>
-                <ul class="space-y-2">
-                  <li>
-                    <a href="#" class="text-gray-600 hover:text-red-600 transition-colors duration-200">Home</a>
-                  </li>
-                  <li>
-                    <a href="#" class="text-gray-600 hover:text-red-600 transition-colors duration-200">About Us</a>
-                  </li>
-                  <li>
-                    <a href="#" class="text-gray-600 hover:text-red-600 transition-colors duration-200">Donation Process</a>
-                  </li>
-                  <li>
-                    <a href="#" class="text-gray-600 hover:text-red-600 transition-colors duration-200">Find Donation Centers</a>
-                  </li>
-                  <li>
-                    <a href="#" class="text-gray-600 hover:text-red-600 transition-colors duration-200">Blood Request</a>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h4 class="text-lg font-semibold text-gray-800 mb-4">Support</h4>
-                <ul class="space-y-2">
-                  <li>
-                    <a href="#" class="text-gray-600 hover:text-red-600 transition-colors duration-200">FAQs</a>
-                  </li>
-                  <li>
-                    <a href="#" class="text-gray-600 hover:text-red-600 transition-colors duration-200">Contact Us</a>
-                  </li>
-                  <li>
-                    <a href="#" class="text-gray-600 hover:text-red-600 transition-colors duration-200">Privacy Policy</a>
-                  </li>
-                  <li>
-                    <a href="#" class="text-gray-600 hover:text-red-600 transition-colors duration-200">Terms of Service</a>
-                  </li>
-                  <li>
-                    <a href="#" class="text-gray-600 hover:text-red-600 transition-colors duration-200">Help Center</a>
-                  </li>
-                </ul>
-              </div>
+            </div>
+            <div
+              class="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400"
+            >
+              <p>© 2024 RedRespond . All rights reserved.</p>
             </div>
           </div>
         </footer>

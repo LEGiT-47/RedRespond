@@ -562,7 +562,12 @@ from django.shortcuts import render
 import json
 
 def bbsearch(request):
-    user111 = get_object_or_404(NormalUser, user=request.user)
+    tyroc="no"
+    try:
+     user111 = get_object_or_404(NormalUser, user=request.user)
+     tyroc="yess"
+    except Exception:
+     user111 = get_object_or_404(BloodBank, user=request.user)
     if request.method == "POST":
         try:
             data = json.loads(request.body)  # Parse JSON data from the request
@@ -596,13 +601,13 @@ def bbsearch(request):
             sorted_blood_banks = sorted(blood_banks_data, key=lambda x: x["distance"])
 
             # Pass the sorted data to the template
-            return render(request, "main/bloodbank_search.html", {'all_requests': sorted_blood_banks, 'user111': user111})
+            return render(request, "main/bloodbank_search.html", {'all_requests': sorted_blood_banks, 'user111': user111, 'tyroc': tyroc})
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
 
     # Render default template for GET requests
-    return render(request, "main/bloodbank_search.html", {'all_requests': BloodBank.objects.all(), 'user111': user111})
+    return render(request, "main/bloodbank_search.html", {'all_requests': BloodBank.objects.all(), 'user111': user111, 'tyroc': tyroc})
 
 from decimal import Decimal
 
@@ -681,7 +686,21 @@ def view_profile(request):
         user111.user.pincode = request.POST.get('pincode', user111.user.pincode)
         user111.user.loc_latitude = request.POST.get('latitude', user111.user.loc_latitude)
         user111.user.loc_longitude = request.POST.get('longitude', user111.user.loc_longitude)
+        if request.user.user_type == 'normal':
+            if request.POST.get('blood_group') != user111.blood_group:
+                # Check if the new blood group is valid
+                if request.POST.get('blood_group') in ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']:
+                    user111.blood_group = request.POST.get('blood_group')
+                else:
+                    messages.error(request, 'Invalid blood group!')
+                    return redirect('view_profile')
+            user111.blood_group = request.POST.get('blood_group', user111.blood_group)
+        else:
+            user111.organization_name = request.POST.get('organization_name', user111.organization_name)
+            user111.website = request.POST.get('website', user111.website)
+        user111.save()
         user111.user.save()
+
         messages.success(request, 'Profile updated successfully!')
         return redirect('view_profile')
     return render(request, 'main/profile_page.html', {'user111': user111,'home':home})

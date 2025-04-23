@@ -10,6 +10,12 @@
       rel="stylesheet"
       href="{% static 'normal_home.css' %}">
       <link rel="stylesheet" href="{% static 'bloodbank_search.css' %}" />
+      <style>
+        #webcrumbs .bg-black {
+            --tw-bg-opacity: 1;
+            background-color: rgb(0 0 0 / var(--tw-bg-opacity));
+        }
+    </style>
   </head>
     </head>
     <body onload="updateTime()">
@@ -26,6 +32,7 @@
                             >schedule</span>
                           <span class="text-sm"><span id="time"></span> <span id="date"></span></span>
                         </div>
+                        {% if tyroc == "yess"%}
                         <div class="flex items-center space-x-2">
                           <span class="material-symbols-outlined text-red-500"
                             >person</span
@@ -44,6 +51,22 @@
                               <span class="material-symbols-outlined mr-2">home</span>
                                 Home
                             </button></a>
+                        {% else %}
+                        <div class="flex items-center space-x-2">
+                            <span class="material-symbols-outlined text-red-500"
+                              >person</span
+                            >
+                            <span>&nbsp;Hello, {{user111.organization_name}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                           
+                          </div>
+                            <a href="{% url 'blood_bank_home'%}">
+                                <button
+                                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105 flex items-center space-x-2"
+                                >
+                                <span class="material-symbols-outlined mr-2">home</span>
+                                    Home
+                                </button></a>
+                        {% endif %}
                           <a href="{% url 'view_profile' %}">
                             <button
                               class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105 flex items-center space-x-2"
@@ -167,68 +190,96 @@
                        
                     </div>
                 </div>
-                <footer class="bg-red-600 text-white mt-8">
-                    <div class="p-8 grid grid-cols-1 md:grid-cols-4 gap-8">
-                        <div>
-                            <h3 class="text-xl font-bold mb-4">BloodBank Finder</h3>
-                            <p class="mb-4">
-                                Helping people find blood banks quickly and easily when they need it most.
-                            </p>
-                            <div class="flex space-x-4">
-                                <a
-                                    href="https://webcrumbs.cloud/placeholder"
-                                    class="hover:text-red-200 transition duration-300"
-                                >
-                                    <i class="fa-brands fa-facebook text-xl"></i>
-                                </a>
-                                <a
-                                    href="https://webcrumbs.cloud/placeholder"
-                                    class="hover:text-red-200 transition duration-300"
-                                >
-                                    <i class="fa-brands fa-twitter text-xl"></i>
-                                </a>
-                                <a
-                                    href="https://webcrumbs.cloud/placeholder"
-                                    class="hover:text-red-200 transition duration-300"
-                                >
-                                    <i class="fa-brands fa-instagram text-xl"></i>
-                                </a>
-                                <a
-                                    href="https://webcrumbs.cloud/placeholder"
-                                    class="hover:text-red-200 transition duration-300"
-                                >
-                                    <i class="fa-brands fa-linkedin text-xl"></i>
-                                </a>
-                            </div>
+                <footer class="mt-16 bg-black border-t" style="border-radius: 30px;">
+                    <div class="max-w-7xl mx-auto px-6 py-12" style="margin-top: 20px;">
+                      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                        <div class="space-y-4">
+                          <h3
+                            class="text-xl font-bold  bg-clip-text bg-gradient-to-r text-red-600"
+                          >
+                            RedRespond
+                          </h3>
+                          <p class="text-gray-400">
+                            Connecting donors with those in need, one donation at a time.
+                          </p>
                         </div>
-                        <div>
-                            <h4 class="font-bold mb-4">Quick Links</h4>
-                            <ul class="space-y-2">
-                                <li>
-                                    <a
-                                        href="https://webcrumbs.cloud/placeholder"
-                                        class="hover:underline transition duration-300"
-                                        >Home</a
-                                    >
-                                </li>
-                                <li>
-                                    <a
-                                        href="https://webcrumbs.cloud/placeholder"
-                                        class="hover:underline transition duration-300"
-                                        >Search Blood Banks</a
-                                    >
-                                </li>
-                                <li>
-                                    <a
-                                        href="https://webcrumbs.cloud/placeholder"
-                                        class="hover:underline transition duration-300"
-                                        >Donate Blood</a
-                                    >
-                                </li>
-                            </ul>
+                        <div class="space-y-4">
+                          <h4 class="font-semibold text-white">Quick Links</h4>
+                          <ul class="space-y-2">
+                            <li>
+                              <a
+                                href="#"
+                                class="text-gray-400 hover:text-red-600 transition-colors duration-300"
+                                >About Us</a
+                              >
+                            </li>
+                            <li>
+                              <a
+                                href="#"
+                                class="text-gray-400 hover:text-red-600 transition-colors duration-300"
+                                >Contact</a
+                              >
+                            </li>
+                            <li>
+                              <a
+                                href="#"
+                                class="text-gray-400 hover:text-red-600 transition-colors duration-300"
+                                >FAQ</a
+                              >
+                            </li>
+                          </ul>
                         </div>
+                        <div class="space-y-4">
+                          <h4 class="font-semibold text-white">Legal</h4>
+                          <ul class="space-y-2">
+                            <li>
+                              <a
+                                href="#"
+                                class="text-gray-400 hover:text-red-600 transition-colors duration-300"
+                                >Privacy Policy</a
+                              >
+                            </li>
+                            <li>
+                              <a
+                                href="#"
+                                class="text-gray-400 hover:text-red-600 transition-colors duration-300"
+                                >Terms of Service</a
+                              >
+                            </li>
+                            <li>
+                              <a
+                                href="#"
+                                class="text-gray-400 hover:text-red-600 transition-colors duration-300"
+                                >Cookie Policy</a
+                              >
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="space-y-4">
+                          <h4 class="font-semibold text-white">Connect With Us</h4>
+                          <div class="flex space-x-4">
+                            <span
+                              class="material-symbols-outlined text-gray-400 cursor-pointer hover:text-red-600 transition-colors duration-300"
+                              >facebook</span
+                            >
+                            <span
+                              class="material-symbols-outlined text-gray-400 cursor-pointer hover:text-red-600 transition-colors duration-300"
+                              >mail</span
+                            >
+                            <span
+                              class="material-symbols-outlined text-gray-400 cursor-pointer hover:text-red-600 transition-colors duration-300"
+                              >phone_in_talk</span
+                            >
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400"
+                      >
+                        <p>© 2024 RedRespond . All rights reserved.</p>
+                      </div>
                     </div>
-                </footer>
+                  </footer>
             </div>
         </div>
         <script>
