@@ -578,7 +578,7 @@ def bbsearch(request):
             blood_banks = BloodBank.objects.all()
             blood_banks_data = [
                 {
-                    "name": bank.organization_name,
+                    "organization_name": bank.organization_name,
                     "lat": bank.user.loc_latitude,
                     "lon": bank.user.loc_longitude,
                     "address": bank.user.address,
