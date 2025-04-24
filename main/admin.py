@@ -29,7 +29,7 @@ class DonationAdmin(admin.ModelAdmin):
 
 @admin.register(DonationRequest)
 class DonationRequestAdmin(admin.ModelAdmin):
-    list_display = ('blood_bank', 'blood_group', 'requested_amount', 'request_datetime', 'status')
+    list_display = ('id','blood_bank', 'blood_group', 'requested_amount', 'request_datetime', 'status')
     list_filter = ('status', 'blood_group')
     search_fields = ('blood_bank__username', 'blood_group')
 

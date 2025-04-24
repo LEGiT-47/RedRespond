@@ -98,7 +98,14 @@ def normal_home(request):
     # past_donations = Donation.objects.filter(donor=request.user).exclude(status='not_confirmed',status='not_accepted')
     already = Donation.objects.filter(donor=request.user,  status='donated')
     notconfirm= Donation.objects.filter(donor=request.user,status='not_confirmed')
+    not_accepted= Donation.objects.filter(donor=request.user,status='not_accepted')
     pending= Donation.objects.filter(donor=request.user, scheduled_datetime__gt=timezone.now(),status='pending')
+    fulfilled = []
+    fulfilled_requests = FulfilledRequests.objects.filter(fulfilled_by=profile)
+    for request1 in fulfilled_requests:
+        donation_request = DonationRequest.objects.get(id=request1.donation_req_id)
+        fulfilled.append(donation_request)
+
     latest_donation = Donation.objects.filter(donor=request.user, status__in=['donated', 'pending','not_confirmed']).order_by('-scheduled_datetime').first()
     eligible = "True" if not latest_donation or (timezone.now() - latest_donation.scheduled_datetime).days >= 90 else "False"
     eligible_time = 90 - (timezone.now() - latest_donation.scheduled_datetime).days if latest_donation else None
@@ -111,7 +118,7 @@ def normal_home(request):
             return redirect('donation_request_success')
     else:
           form = DonationRequestForm()
-    return render(request, 'main/normal_home.html', {'form': form,'blood_groupiee':blood_groupiee,'already':already,'notconfirm':notconfirm,'pending':pending,'eligible':eligible,'eligible_time':eligible_time})
+    return render(request, 'main/normal_home.html', {'form': form,'blood_groupiee':blood_groupiee,'already':already,'notconfirm':notconfirm,'pending':pending,'eligible':eligible,'eligible_time':eligible_time,'fulfilled':fulfilled,'not_accepted':not_accepted})
 
 def logout_view(request):
     logout(request)
@@ -228,20 +235,16 @@ def blood_bank_home(request):
             # Set the blood_bank to the currently logged-in user's BloodBank
             donation_request.blood_bank = BloodBank.objects.get(user=request.user)
             matching_users = NormalUser.objects.filter(blood_group=donation_request.blood_group)
+        
             
-            # Save the donation request
-            print(matching_users.count())
+            for user1 in matching_users:
+                if haversine_distance(user1.user.loc_latitude, user1.user.loc_longitude, blood_bank.user.loc_latitude, blood_bank.user.loc_longitude) >= 10:
+                    matching_users=matching_users.exclude(id=user1.id)
             donation_request.sent_requests=matching_users.count()
             donation_request.save()
-            # user_id_list = list(matching_users)
-            # print(user_id_list)
-            fulfilled_request = FulfilledRequests.objects.create(donation_req_id=donation_request.id)
-            # fulfilled_request.user_ids.set(user_id_list)
-            # print(fulfilled_request)
-            
-            # Find users with the requested blood group
-            
-            print(matching_users)
+
+            FulfilledRequests.objects.create(donation_req_id=donation_request.id)
+
             inline_keyboard = {
                 "inline_keyboard": [
                 [
@@ -251,14 +254,12 @@ def blood_bank_home(request):
                 ]
                 }
             
-            message = f'''A donation request for {donation_request.blood_group} has been made by {donation_request.blood_bank} Hospital.
-               The {donation_request.blood_bank} Hospital needs {donation_request.requested_amount} ml of {donation_request.blood_group} blood.
-               Its Phone number is {donation_request.blood_bank.user.phone_number} and its address is {donation_request.blood_bank.user.address}.
-               Please respond if you can donate.'''
+            message = f'''A donation request for {donation_request.blood_group} has been made by {donation_request.blood_bank} Hospital.\n\nThe {donation_request.blood_bank} Hospital needs {donation_request.requested_amount} ml of {donation_request.blood_group} blood.\n\nIts Phone number is {donation_request.blood_bank.user.phone_number} and its Address is {donation_request.blood_bank.user.address}.\n\nThe Request Date is {donation_request.request_datetime}.\n\nAdditional Information: {donation_request.additional_info if donation_request.additional_info else 'No additional information provided.'}\n
+                                Please respond if you can donate.'''
             # Send Telegram messages to all matching users
+            
             for user in matching_users:
-                
-                send_telegram_message(user.user.telegram_chat_id, message,request_contact=False,reply_markup=inline_keyboard)
+                   send_telegram_message(user.user.telegram_chat_id, message,request_contact=False,reply_markup=inline_keyboard)
 
             # Redirect to the summary page with the request ID
             return redirect('donation_request_summary', request_id=donation_request.id)
@@ -296,7 +297,7 @@ def blood_bank_home(request):
 @login_required
 def donation_request_summary(request, request_id):
     # Get the specific donation request
-    donation_request = get_object_or_404(DonationRequest, id=request_id, blood_bank__user=request.user)
+    donation_request = get_object_or_404(DonationRequest, id=request_id)
 
     accepted_request = get_object_or_404(FulfilledRequests, donation_req_id=request_id).fulfilled_by
     fulfilled_request = get_object_or_404(FulfilledRequests, donation_req_id=request_id)

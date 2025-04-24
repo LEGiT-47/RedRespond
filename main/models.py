@@ -7,7 +7,7 @@ class CustomUser(AbstractUser):
         ('blood_bank', 'Blood Bank'),
     )
     user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='normal')
-    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    phone_number = models.CharField(max_length=10, unique=True, null=False)
     address = models.TextField(blank=True, null=True)
     city = models.CharField(max_length=100, blank=True, null=True)
     state = models.CharField(max_length=100, blank=True, null=True)
